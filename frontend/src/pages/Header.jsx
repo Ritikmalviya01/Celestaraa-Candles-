@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import {  X } from "lucide-react";
 import { TiThMenu } from "react-icons/ti";
 import { FaUserAlt } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
@@ -26,7 +26,7 @@ const Header = () => {
               key={item}
               to={`/${item}`}
               className={({ isActive }) =>
-                `capitalize transition-colors duration-300 hover:text-primary3 hover:text-2xl ${
+                `capitalize transition-colors duration-300 cursor-pointer hover:text-primary3 hover:text-xl ${
                   isActive ? "font-semibold" : "text-primary"
                 }`
               }
@@ -35,9 +35,9 @@ const Header = () => {
             </NavLink>
           ))}
         </nav>
-        <div className="flex items-center gap-5 sm:gap-8 text-primary text-lg sm:text-2xl ">
-          <FaCartShopping  />
-        <FaUserAlt />
+        <div className="flex items-center gap-5 sm:gap-8 text-primary text-lg sm:text-2xl">
+          <FaCartShopping className="cursor-pointer"  />
+        <FaUserAlt className="cursor-pointer" />
         </div>
 
         {/* Mobile Toggle Button */}
@@ -45,7 +45,7 @@ const Header = () => {
           className="md:hidden text-primary focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <X size={28} /> : <TiThMenu size={22} />}
+          {isOpen ? <X size={22} /> : <TiThMenu size={22} />}
         </button>
 
         {/* Mobile Dropdown (absolute, not affecting header height) */}
