@@ -43,7 +43,7 @@ const TestimonialCarousel = () => {
       setCurrentIndex((prevIndex) => 
         prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
       );
-    }, 1000); 
+    }, 3000); 
 
     return () => clearInterval(interval);
   }, [testimonials.length]);

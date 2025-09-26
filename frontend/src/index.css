@@ -19,7 +19,8 @@
     --color-primary: #4F382E;   /*Mocha Brown */
   --color-primary2: #F2EAE2; /* Warm Linen Beige: */
   --color-primary1: #E3D9CC;    /* Sandy Tan */
-  --color-primary3: #B7C2A3;    /* Soft Sage Green */
+  --color-primary3: #B7C2A3; 
+  --color-bg: #F2EAE1;   /* Soft Sage Green */
   --footer-skin-color-bg:#F2EAE1;
 }
 
