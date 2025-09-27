@@ -25,7 +25,7 @@ function App() {
   return (
      <>
       {!shouldHideLayout && <Header />}
-      <main className="min-h-screen">
+      <main className="min-h-[78vh]">
         <ScrollToTop />
         <Outlet />
       </main>
