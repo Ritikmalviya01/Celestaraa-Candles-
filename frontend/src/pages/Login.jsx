@@ -65,15 +65,11 @@ const Login = () => {
     
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-        setIsSubmitting(false);
-    }, 2000);
+    
   };
 
   return (
     <div className=" bg-primary1 flex items-center justify-center p-4">
-      {/* Background decoration */}
       
       
       <div className="relative w-full max-w-md">
