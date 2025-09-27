@@ -4,6 +4,7 @@ import {
 
 import App from "../App";
 import Home from "../pages/Home";
+import SearchCandlesPage from "../Modules/user/SearchCandlesPage";
 
 
 
@@ -17,10 +18,10 @@ const router = createBrowserRouter([
         element: <Home />,
       },
 
-    //   {
-    //     path: "/about",
-    //     element: <About />,
-    //   },
+      {
+        path: "/search-candles",
+        element: <SearchCandlesPage />,
+      },
     ]
     }
 ]

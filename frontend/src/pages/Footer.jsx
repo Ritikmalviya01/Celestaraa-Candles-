@@ -6,7 +6,7 @@ import centerGreenLeaf from "../assets/footerImages/centerGreenLeaf.png";
 
 const Footer = () => {
   return (
-    <div className="bg-[var(--footer-skin-color-bg)] w-full h-screen">
+    <footer className="bg-[var(--footer-skin-color-bg)] w-full h-screen">
       <div className="bg-[var(--color-primary)] relative w-full h-screen flex flex-col justify-center items-center rounded-t-[50%]">
         <div className="absolute left-0">
           <img src={greenLeaf} alt="" />
@@ -52,7 +52,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </div>
+    </footer>
   );
 };
 
