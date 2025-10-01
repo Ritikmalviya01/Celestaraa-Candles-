@@ -8,6 +8,9 @@ import uploadImageCloudinary from "../utils/uploadImageCloudinary.js";
 import generateOtp from "../utils/generateOtp.js";
 import forgotPasswordTemplate from "../utils/forgotPasswordTemplate.js";
 import jwt from "jsonwebtoken";
+import cartProductModel from "../models/cartProduct.model.js"
+import orderModel from "../models/order.model.js"
+import ProductModel from "../models/product.model.js";
 
 export async function registerUserController(req, res) {
   try {
@@ -445,3 +448,149 @@ export async function refreshToken(req, res) {
     });
   }
 }
+
+// GET /products
+
+
+export const getAllProductsForUser = async (req, res) => {
+  try {
+    // Only return published products
+    const products = await ProductModel.find({ publish: true })
+      .populate("category", "name")      // show category name only
+      .populate("subCategory", "name"); // show subCategory name only
+
+    res.json({
+      success: true,
+      products,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+
+export const addToCart = async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+    const userId = req.user._id; // assume you have middleware for authentication
+
+    // check if product already in cart
+    let cartItem = await cartProductModel.findOne({ userId, product: productId });
+
+    if (cartItem) {
+      cartItem.quantity += quantity || 1;
+      await cartItem.save();
+    } else {
+      cartItem = await cartProductModel.create({
+        product: productId,
+        quantity: quantity || 1,
+        userId,
+      });
+
+      // also push in user's shopping_cart
+      await UserModel.findByIdAndUpdate(userId, {
+        $push: { shopping_cart: cartItem._id }
+      });
+    }
+
+    res.json({ success: true, cartItem });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+export const getCart = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const cart = await cartProductModel.find({ userId })
+      .populate("product") // show product details
+      .lean();
+
+    res.json({ success: true, cart });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+export const updateCart = async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    const cartItemId = req.params.id;
+
+    const cartItem = await cartProductModel.findByIdAndUpdate(
+      cartItemId,
+      { quantity },
+      { new: true }
+    );
+
+    res.json({ success: true, cartItem });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// DELETE /cart/remove/:id
+export const removeCart = async (req, res) => {
+  try {
+    const cartItemId = req.params.id;
+    await cartProductModel.findByIdAndDelete(cartItemId);
+
+    res.json({ success: true, message: "Removed from cart" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
+
+
+// POST /order/checkout
+export const checkout = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { addressId, paymentMethod } = req.body;
+
+    const cartItems = await cartProductModel.find({ userId }).populate("product");
+
+    if (!cartItems.length) {
+      return res.status(400).json({ success: false, message: "Cart is empty" });
+    }
+
+    // calculate total
+    let totalAmount = 0;
+    cartItems.forEach(item => {
+      totalAmount += (item.product.price - (item.product.discount || 0)) * item.quantity;
+    });
+
+    // create order
+    const order = await orderModel.create({
+      user: userId,
+      items: cartItems.map(item => ({
+        product: item.product._id,
+        quantity: item.quantity,
+        price: item.product.price
+      })),
+      address: addressId,
+      totalAmount,
+      paymentMethod,
+      status: "Pending"
+    });
+
+    // push to user's history
+    await UserModel.findByIdAndUpdate(userId, {
+      $push: { orderHistory: order._id },
+      $set: { shopping_cart: [] } // empty cart
+    });
+
+    // clear cart
+    await cartProductModel.deleteMany({ userId });
+
+    res.json({ success: true, order });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};

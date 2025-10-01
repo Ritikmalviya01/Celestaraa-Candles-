@@ -6,6 +6,7 @@ import helmet, { crossOriginResourcePolicy } from 'helmet';
 import cookieParser from 'cookie-parser';
 import connectDb from './config/connectDb.js';
 import userRouter from './routes/user.route.js';
+import adminRouter from './routes/admin.routes.js';
 
 
 
@@ -33,7 +34,9 @@ app.get("/", (req,res) =>{
     res.json({message: "Hello from server " + PORT})
 })
 
-app.use('/api/user' , userRouter )
+app.use('/api/user' , userRouter );
+app.use('/api/admin', adminRouter);
+
 
 
 connectDb().then(() => {

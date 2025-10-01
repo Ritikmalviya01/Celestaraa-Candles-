@@ -16,13 +16,19 @@ productId : {
     ref : "product" ,
 },
 
-product_details : {
-   
-    name : String ,
-    image : Array ,
-    
-
-},
+items: [
+    {
+      productId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "product",
+        required: true,
+      },
+      name: String,
+      image: [String],
+      quantity: { type: Number, default: 1 },
+      price: { type: Number, default: 0 }, // price at the time of purchase
+    },
+  ],
 paymentId : {
     type : String ,
     default : "" ,
