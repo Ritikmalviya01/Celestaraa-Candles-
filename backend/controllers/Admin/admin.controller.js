@@ -1,0 +1,335 @@
+import OrderModel from "../../models/order.model.js";
+import ProductModel from "../../models/product.model.js";
+import UserModel from "../../models/user.models.js";
+import CategoryModel from "../../models/category.model.js";
+import SubCategoryModel from "../../models/subCategory.model.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import generatedAccessToken from "../../utils/generatedAccessToken.js";
+import generatedRefreshToken from "../../utils/generatedRefreshToken.js";
+
+
+export async function AdminLoginController(req, res) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "All fields are required",
+        error: true,
+        success: false,
+      });
+    }
+
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found",
+        error: true,
+        success: false,
+      });
+    }
+    if (user.status !== "Active") {
+      return res.status(403).json({
+        message: `Your account is ${user.status}. Please contact support Team.`,
+        error: true,
+        success: false,
+      });
+    }
+
+    const checkPassword = await bcrypt.compare(password, user.password);
+    if (!checkPassword) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+        error: true,
+        success: false,
+      });
+    }
+
+    const accessToken = await generatedAccessToken(user._id);
+    const refreshToken = await generatedRefreshToken(user._id);
+
+    const cookieOption = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    };
+    res.cookie("accessToken", accessToken, cookieOption);
+    res.cookie("refreshToken", refreshToken, cookieOption);
+
+    return res.json({
+      message: "Login successfull",
+      error: false,
+      success: true,
+      data: { accessToken, refreshToken },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+export const getDashboardStats = async (req, res) => {
+  try {
+    const totalUsers = await UserModel.countDocuments();
+    const totalProducts = await ProductModel.countDocuments();
+    const totalOrders = await OrderModel.countDocuments();
+    const completedOrders = await OrderModel.countDocuments({
+      payment_status: "Completed", // since you don’t have "status"
+    });
+
+    // Fetch recent 5 orders with user + address populated
+    const recentOrders = await OrderModel.find()
+      .sort({ createdAt: -1 }) // newest first
+      .limit(5)
+      .populate("userId", "name email") // only fetch name, email of user
+      .populate("delivery_address"); // fetch address details
+
+    res.json({
+      success: true,
+      data: {
+        totalUsers,
+        totalProducts,
+        totalOrders,
+        completedOrders,
+        recentOrders,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const getOrderDetails = async (req, res) => {
+  try {
+    const { orderId } = req.body; // frontend will send orderId in body
+
+    if (!orderId) {
+      return res.status(400).json({
+        error: true,
+        success: false,
+        message: "Order ID is required",
+      });
+    }
+
+    const order = await OrderModel.findOne({ orderId })
+      .populate("userId", "name email phone") // fetch limited user fields
+      .populate("delivery_address"); // fetch full address
+
+    if (!order) {
+      return res.status(404).json({
+        error : true ,
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    res.json({
+        error: false,
+      success: true,
+      data: order,
+    });
+  } catch (err) {
+    res.status(500).json({
+       
+    error : true,
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+export const addProduct = async (req, res) => {
+  try {
+    const {
+      name,
+      image,
+      category,
+      subCategory,
+      unit,
+      stock,
+      price,
+      discount,
+      description,
+      more_details,
+      publish,
+    } = req.body;
+
+    // Basic validation
+    if (!name || !price || !category || category.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, price, and at least one category are required",
+      });
+    }
+
+    const product = new ProductModel({
+      name,
+      image: image || [],
+      category,
+      subCategory: subCategory || [],
+      unit: unit || "",
+      stock: stock || 0,
+      price,
+      discount: discount || 0,
+      description: description || "",
+      more_details: more_details || {},
+      publish: publish !== undefined ? publish : true,
+    });
+
+    await product.save();
+
+    res.status(201).json({
+        error : false ,
+      success: true,
+      message: "Product added successfully",
+      product,
+    });
+  } catch (err) {
+    res.status(500).json({
+        error : true ,
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+
+export const listProducts = async (req, res) => {
+  try {
+    const products = await ProductModel.find()
+      .populate("category", "name")
+      .populate("subCategory", "name")
+      .sort({ createdAt: -1 }); // newest first
+
+    res.json({
+      success: true,
+      products,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+//edit api pending 
+
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const { productId } = req.params; // 👈 take productId from params
+
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "Product ID is required" });
+    }
+
+    const deletedProduct = await ProductModel.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      return res.status(404).json({
+        error: true,
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.json({
+      error: false,
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: true,
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+import TestimonialModel from "../../models/testimonial.model.js";
+
+// ✅ Add Testimonial
+export const addTestimonial = async (req, res) => {
+  try {
+    const { name, message, rating, image } = req.body;
+
+    if (!name || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "Name and message are required",
+      });
+    }
+
+    const testimonial = new TestimonialModel({
+      name,
+      message,
+      rating: rating || 5,
+      image: image || "",
+    });
+
+    await testimonial.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Testimonial added successfully",
+      data: testimonial,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// ✅ List Testimonials
+export const listTestimonials = async (req, res) => {
+  try {
+    const testimonials = await TestimonialModel.find().sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: testimonials,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// ✅ Delete Testimonial
+export const deleteTestimonial = async (req, res) => {
+  try {
+    const { testimonialId } = req.params;
+
+    if (!testimonialId) {
+      return res.status(400).json({
+        success: false,
+        message: "Testimonial ID is required",
+      });
+    }
+
+    const deleted = await TestimonialModel.findByIdAndDelete(testimonialId);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Testimonial not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Testimonial deleted successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
