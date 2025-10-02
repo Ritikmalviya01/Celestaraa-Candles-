@@ -9,6 +9,7 @@ import Login from "../pages/Login";
 import SingleCandleDetails from "../Modules/user/pages/SingleCandleDetails";
 import Cart from "../Modules/user/pages/Cart";
 import CandleBlog from "../Modules/user/pages/CandleBlog";
+import Signup from "../pages/SignUp";
 
 
 
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
       },
       {
         path: "/search-candles/:_id",

@@ -4,6 +4,8 @@ import Footer from "./pages/Footer";
 import Header from "./pages/Header";
 import { useState } from "react";
 import ScrollToTop from "./components/ScrollToTop";
+import { SearchQuery } from "./components/Context";
+
 
 function App() {   
   const location = useLocation();
@@ -20,10 +22,11 @@ function App() {
     location.pathname.startsWith(path)
   );
 
-  
+  const [SearchTerm, setSearchTerm] = useState("")
 
   return (
      <>
+     <SearchQuery.Provider  value={{SearchTerm,setSearchTerm}}>
       {!shouldHideLayout && <Header />}
       <main className="min-h-[78vh]">
         <ScrollToTop />
@@ -31,6 +34,7 @@ function App() {
       </main>
       {!shouldHideLayout && <Footer />}
       <Toaster position="top-center" reverseOrder={false} />
+      </SearchQuery.Provider>
     </>
   );
 }
