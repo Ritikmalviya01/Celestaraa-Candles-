@@ -1,0 +1,43 @@
+import React from "react";
+import cardCandleImage from "../assets/candleCardImage.svg";
+import { IoMdAddCircle } from "react-icons/io";
+
+const ProductCard = ({eachProduct}) => {
+  return (
+    <div  className="card1 h-fit font-heading flex flex-col gap-6 grid-cols-1">
+      <div className="image w-full">
+        <img
+          className="w-full h-full object-cover"
+          src={cardCandleImage}
+          alt="cardCandleImage"
+        />
+      </div>
+
+      <div className="details w-full">
+        <div className="nameAndPrice flex w-full justify-between">
+          <span className="name max-sm:text-2xl max-lg:text-2xl md:text-xl lg:text-2xl xl:text-3xl  font-bold tracking-wider">
+            {eachProduct.name}
+          </span>
+          <span className="price flex items-start text-3xl font-semibold tracking-wider">
+            ${eachProduct.price}{" "}
+            <span className="line-through text-xl text-[#9E9EA0]">
+              ${eachProduct.oldPrice}
+            </span>
+          </span>
+        </div>
+        <div className="desc text-xl tracking-wider h-6 truncate">
+          {" "}
+          {eachProduct.desc}
+        </div>
+      </div>
+
+      <div className="addToCardBtn w-full">
+        <button className="w-full py-3 hover:text-white hover:bg-[#4F382E] rounded-full lg:text-base xl:text-xl font-semibold tracking-widest flex gap-4 items-center justify-center border border-[#C9A489]">
+          Add to Cart <IoMdAddCircle />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;

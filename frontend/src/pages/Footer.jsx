@@ -76,8 +76,8 @@ const Footer = () => {
                 Find Us On
               </p>
               <ul className="flex gap-4">
-                {socialMediaIcons.map((IconName) => (
-                  <li className="bg-[var(--color-primary)] p-2 rounded-full"> <IconName className="text-white size-6"/> </li>
+                {socialMediaIcons.map((IconName,i) => (
+                  <li key={i} className="bg-[var(--color-primary)] p-2 rounded-full"> <IconName className="text-white size-6"/> </li>
                 ))}
               </ul>
             </div>
