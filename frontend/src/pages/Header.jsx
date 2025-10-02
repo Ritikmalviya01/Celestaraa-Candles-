@@ -1,80 +1,119 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {  X } from "lucide-react";
 import { TiThMenu } from "react-icons/ti";
 import { FaUserAlt } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
+import Search from "../components/Search"
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
+ const [isMobileOpen, setIsMobileOpen] = useState(false);
+const [isDesktopOpen, setIsDesktopOpen] = useState(false);
 
-  const navItems = ["About", "Products", "Contact" , "Blogs"];
+  const navItems = ["About", "search-candles", "Contact" , "Blogs"];
 
   return (
-    <header className="sticky top-0 z-50 bg-primary1 shadow-md">
-      <div className="max-w-7xl mx-auto flex items-center justify-between p-6 py-4 relative">
-        {/* Logo */}
-        
-        <h1 className="text-xl sm:text-2xl font-bold font-heading text-primary">
-          Candle Co.
-        </h1>
-          <div className="flex items-center gap-6 sm:gap-32">
-        {/* Desktop Links */}
-        <nav className="hidden md:flex space-x-6">
-          {navItems.map((item) => (
-            <NavLink
-              key={item}
-              to={`/${item}`}
-              className={({ isActive }) =>
-                `capitalize transition-colors duration-300 cursor-pointer hover:text-primary3 hover:text-xl ${
-                  isActive ? "font-semibold" : "text-primary"
-                }`
-              }
-            >
-              {item}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="flex items-center gap-5 sm:gap-8 text-primary text-lg sm:text-2xl">
-          <FaCartShopping className="cursor-pointer"  />
-        <FaUserAlt className="cursor-pointer" />
-        </div>
 
-        {/* Mobile Toggle Button */}
-        <button
-          className="md:hidden text-primary focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={22} /> : <TiThMenu size={22} />}
-        </button>
-
-        {/* Mobile Dropdown (absolute, not affecting header height) */}
-        {isOpen && (
-          <div className="absolute top-full left-0 w-full text-center bg-primary/40 shadow-sm md:hidden">
-            <div className="flex flex-col px-6 py-4 space-y-4">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item}
-                  to={`/${item}`}
-                  className={({ isActive }) =>
-                    `block capitalize transition-colors duration-300 hover:text-primary3  ${
-                      isActive ? "font-semibold" : "text-primary1"
-                    }`
-                  }
-                  onClick={() => setIsOpen(false)} // close on link click
-                >
-                  {item}
-                </NavLink>
-              ))}
-              
-            </div>
+ <header className=' sticky shadow-2xl top-0 py-2.5 px-6 flex justify-center flex-col bg-bg z-50' >
+      <div className='container p-2 mx-auto items-center  flex justify-between text-neutral-400'>
+       <Link to="/">
+        <div className='h-full'>
+          <div className='h-full flex justify-center items-center '>
+            <img 
+            width={170} 
+            height={45} 
+            alt="Logo"
+            className='hidden lg:block' 
+            />
+            <img 
+            width={170} 
+            height={45} 
+            alt="Logo"
+            className='lg:hidden' 
+            />
           </div>
-        )}
-              </div>
+        </div>
+       </Link>
 
+
+        <div className='search hidden lg:block'>
+          <Search />
+        </div>
+        <div className='login flex items-center gap-5'>
+          <Link to="/cart" >
+          <button  className='lg:hidden'>
+            <FaCartShopping size={20} />
+          </button>
+          </Link>
+          <button className='lg:hidden'>
+            <FaUserAlt size={20} />
+            
+          </button>
+          <button onClick={() => setIsDesktopOpen(!isDesktopOpen)} className='hidden lg:block'>
+            
+  {isDesktopOpen ? <X size={22} /> : <TiThMenu size={22} />}
+          </button>
+{isDesktopOpen && (
+  <div className="absolute top-full left-0 w-full text-center z-100 bg-primary/40 shadow-sm hidden lg:block">
+    <div className="flex flex-col px-6 py-4 space-y-4">
+      {navItems.map((item) => (
+        <NavLink
+          key={item}
+          to={`/${item}`}
+          className={({ isActive }) =>
+            `block capitalize transition-colors duration-300 hover:text-primary3 ${
+              isActive ? "font-semibold" : "text-primary1"
+            }`
+          }
+          onClick={() => setIsDesktopOpen(false)} 
+        >
+          {item}
+        </NavLink>
+      ))}
+    </div>
+  </div>
+)}
+          
+         <div className=' flex items-center gap-6  '>
+          <Link to="/cart">
+          <button className='hidden lg:block'>
+            <FaCartShopping size={20} />
+          </button>
+          </Link>
+          <button className='hidden lg:block'>
+            <FaUserAlt size={20} />
+            
+          </button>
+          <button onClick={() => setIsMobileOpen(!isMobileOpen)} className='lg:hidden'>
+            
+            {isMobileOpen ? <X size={22} /> : <TiThMenu size={22} />}
+          </button>
+        {isMobileOpen && (
+  <div className="absolute top-full left-0 w-full text-center z-100 bg-primary/40 shadow-sm  lg:hidden">
+    <div className="flex flex-col px-6 py-4 space-y-4">
+      {navItems.map((item) => (
+        <NavLink
+          key={item}
+          to={`/${item}`}
+          className={({ isActive }) =>
+            `block capitalize transition-colors duration-300 hover:text-primary3 ${
+              isActive ? "font-semibold" : "text-primary1"
+            }`
+          }
+          onClick={() => setIsMobileOpen(false)} // close on click
+        >
+          {item}
+        </NavLink>
+      ))}
+    </div>
+  </div>
+)}
+         </div>
+        </div>
       </div>
-      
-
+      <div className='container mx-auto px-2 lg:hidden'>
+<Search />
+      </div>
     </header>
   );
 };

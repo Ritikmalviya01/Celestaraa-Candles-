@@ -1,6 +1,7 @@
 import express from 'express';
-import adminAuth from '../middleware/admin.middleware';
-import { addProduct } from '../controllers/Admin/admin.controller';
+import adminAuth from '../middleware/admin.middleware.js';
+import { addProduct, addTestimonial, AdminLoginController, deleteProduct, deleteTestimonial, listProducts, listTestimonials } from '../controllers/Admin/admin.controller.js';
+import bcrypt from "bcryptjs";
 
 // import {
 //   getDashboardStats,
@@ -17,12 +18,17 @@ import { addProduct } from '../controllers/Admin/admin.controller';
 const adminRouter = express.Router();
 // Analytics / Home
 // router.get('/dashboard', adminAuth, getDashboardStats);
-
+adminRouter.post('/login' , AdminLoginController)
 // // Products
 adminRouter.post('/addProduct', adminAuth, addProduct);
-// router.get('/products', adminAuth, listProducts);
+
+adminRouter.get('/products', adminAuth, listProducts);
 // router.put('/product/:id', adminAuth, updateProduct);
-// router.delete('/product/:id', adminAuth, deleteProduct);
+adminRouter.delete('/product/:productId', adminAuth, deleteProduct);
+
+adminRouter.post("/add-testimonial", adminAuth, addTestimonial);
+adminRouter.get("/list-testimonials", listTestimonials); // anyone can view
+adminRouter.delete("/delete-testimonial/:testimonialId", adminAuth, deleteTestimonial);
 
 // // Users
 // router.get('/users', adminAuth, listUsers);

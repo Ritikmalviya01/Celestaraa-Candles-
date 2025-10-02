@@ -52,7 +52,7 @@ const Footer = () => {
             </div>
             <div className="right  relative z-10 flex flex-col gap-2 justify-center">
               <h3 className="lg:block hidden lg:text-6xl  font-extrabold text-[var(--color-primary)]">
-                CELESTRAA
+                CELESTARAA
               </h3>
             </div>
 
@@ -63,7 +63,7 @@ const Footer = () => {
           <div className="w-11/12 bg-white flex sm:flex-row flex-col gap-6 sm:gap-0 sm:justify-between py-8 ">
             <div className="left  w-full sm:w-1/2 flex flex-col gap-6">
               <h3 className="text-3xl lg:text-6xl sm:text-left text-center  font-extrabold text-[var(--color-primary)]">
-                CELESTRAA
+                CELESTARAA
               </h3>
               <p className="text-[var(--color-primary)] sm:text-left text-center font-semibold">
                 Where art, expression, and growth intertwine. Explore pottery,

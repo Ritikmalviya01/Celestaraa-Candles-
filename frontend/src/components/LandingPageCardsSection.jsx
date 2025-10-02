@@ -37,7 +37,7 @@ const products = [
 
 const LandingPageCardsSection = () => {
   return (
-    <div className="px-6 py-12 flex flex-col gap-12">
+    <div className="px-6 py-12 bg-bg flex flex-col gap-12">
       <div className="heading">
         <h3 className="text-center text-2xl font-heading  tracking-wider">
           TRENDING
@@ -58,7 +58,7 @@ const LandingPageCardsSection = () => {
               />
             </div>
 
-            <div className="details w-full">
+            <div className="details w-full px-4">
               <div className="nameAndPrice flex w-full justify-between">
                 <span className="name max-sm:text-2xl max-lg:text-2xl md:text-xl lg:text-2xl xl:text-3xl  font-bold tracking-wider">
                  {eachProduct.name}

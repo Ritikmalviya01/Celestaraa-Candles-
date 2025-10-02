@@ -49,10 +49,10 @@ export default function HeroBanner() {
           Hand-poured soy candles for a peaceful & relaxing vibe.
         </p>
         <div className="mt-4 flex gap-4">
-          <button className="px-6 py-2 bg-white text-black rounded-xl shadow hover:bg-gray-200 transition">
+          <button className="px-6 py-2 hover:bg-primary hover:text-white text-black rounded-xl shadow bg-bg transition">
             Shop Now
           </button>
-          <button className="px-6 py-2 border border-white rounded-xl hover:bg-white hover:text-black transition">
+          <button className="px-6 py-2 border hover:border-primary rounded-xl hover:bg-primary hover:text-white transition">
             Learn More
           </button>
         </div>

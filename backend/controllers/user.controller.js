@@ -45,7 +45,7 @@ export async function registerUserController(req, res) {
 
     const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code=${save?._id}`;
 
-    const verifyEmail = await sendEmail({
+     await sendEmail({
       sendTo: email,
       subject: "Welcome to Blinkeyit   Verify your email",
       html: verifyEmailTeamplate({
@@ -68,7 +68,7 @@ export async function registerUserController(req, res) {
   }
 }
 
-export async function verifyEmailContrpoller(req, res) {
+export async function verifyEmailController(req, res) {
   try {
     const { code } = req.body;
 
@@ -519,8 +519,9 @@ export const getCart = async (req, res) => {
 export const updateCart = async (req, res) => {
   try {
     const { quantity } = req.body;
-    const cartItemId = req.params.id;
+            const { cartItemId } = req.body;
 
+    
     const cartItem = await cartProductModel.findByIdAndUpdate(
       cartItemId,
       { quantity },
@@ -536,7 +537,8 @@ export const updateCart = async (req, res) => {
 // DELETE /cart/remove/:id
 export const removeCart = async (req, res) => {
   try {
-    const cartItemId = req.params.id;
+        const { cartItemId } = req.body;
+
     await cartProductModel.findByIdAndDelete(cartItemId);
 
     res.json({ success: true, message: "Removed from cart" });

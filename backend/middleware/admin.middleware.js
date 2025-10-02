@@ -1,10 +1,8 @@
-// middleware/admin.middleware.js
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.models.js";
 
 const adminAuth = async (req, res, next) => {
   try {
-    // 1. Get token
     const token =
       req.cookies.accessToken ||
       req.headers?.authorization?.split(" ")[1];
@@ -17,8 +15,8 @@ const adminAuth = async (req, res, next) => {
       });
     }
 
-    // 2. Verify token
     const decoded = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+
     if (!decoded) {
       return res.status(401).json({
         message: "Unauthorized access",
@@ -27,8 +25,8 @@ const adminAuth = async (req, res, next) => {
       });
     }
 
-    // 3. Find user
-    const user = await UserModel.findById(decoded.id);
+    const user = await UserModel.findById(decoded._id); // use _id
+
     if (!user) {
       return res.status(401).json({
         message: "User not found",
@@ -37,7 +35,6 @@ const adminAuth = async (req, res, next) => {
       });
     }
 
-    // 4. Check role
     if (user.role !== "ADMIN") {
       return res.status(403).json({
         message: "Access denied: Admins only",
