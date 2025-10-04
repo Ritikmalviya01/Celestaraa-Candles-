@@ -8,7 +8,7 @@ import { linksAdmin } from "../data/text";
 const AdminDashHome = () => {
   const [openDropdown, setOpenDropdown] = useState({});
   const location = useLocation();
-console.log("nothing")
+console.log("nothingd")
   const toggleDropdown = (section) => {
     setOpenDropdown((prev) => ({
       ...prev,
