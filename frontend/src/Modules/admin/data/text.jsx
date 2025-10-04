@@ -25,6 +25,45 @@ export const linksAdmin = [
       },
     ],
   },
+   {
+    type: "link",
+    name: "View Users",
+    icon: <LuLayoutDashboard size={22} />,
+    path: "/admin/view-users",
+  },
+
+  {
+    type: "dropdown",
+    section: "Orders",
+    path: "/admin/view-orders",
+    icon: <LuLayoutDashboard size={22} />,
+    items: [
+      {
+        name: "View Orders",
+        path: "/admin/view-orders",
+      },
+      {
+        name: "Completed Orders",
+        path: "/admin/completed-orders",
+      },
+    ],
+  },
+  {
+    type: "dropdown",
+    section: "Blogs",
+    path: "/admin/add-blogs",
+    icon: <LuLayoutDashboard size={22} />,
+    items: [
+      {
+        name: "Add Blog",
+        path: "/admin/add-blogs",
+      },
+      {
+        name: "Delete Blog",
+        path: "/admin/delete-blogs",
+      },
+    ],
+  },
   {
     type: "dropdown",
     section: "Testimonials",
@@ -41,25 +80,5 @@ export const linksAdmin = [
       },
     ],
   },
-  {
-    type: "link",
-    name: "Listing Management",
-    icon: <LuLayoutDashboard size={22} />,
-    path: "/admin/listing-management",
-  },
-  {
-    type: "dropdown",
-    section: "Sales Team",
-    icon: <LuLayoutDashboard size={22} />,
-    items: [
-      {
-        name: "Sales Head",
-        path: "/admin/sales-head",
-      },
-      {
-        name: "Sales Executive",
-        path: "/admin/sales-executive",
-      },
-    ],
-  },
+ 
 ]
