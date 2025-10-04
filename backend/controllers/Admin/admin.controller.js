@@ -141,6 +141,7 @@ export const getOrderDetails = async (req, res) => {
   }
 };
 
+
 export const addProduct = async (req, res) => {
   try {
     const {
@@ -165,6 +166,21 @@ export const addProduct = async (req, res) => {
       });
     }
 
+    // ✅ Build structured more_details safely
+    const structuredDetails = {
+      aromaLevel: more_details?.aromaLevel || null,
+      aromaType: more_details?.aromaType || null,
+      productSize: more_details?.productSize || null,
+      burnTime: more_details?.burnTime || null,
+      waxType: more_details?.waxType || null,
+      wickType: more_details?.wickType || null,
+      priceRange: more_details?.priceRange || null,
+      color: more_details?.color || null,
+      ecoFriendly: more_details?.ecoFriendly || [],
+      rating: more_details?.rating || null,
+      occasion: more_details?.occasion || null,
+    };
+
     const product = new ProductModel({
       name,
       image: image || [],
@@ -175,21 +191,21 @@ export const addProduct = async (req, res) => {
       price,
       discount: discount || 0,
       description: description || "",
-      more_details: more_details || {},
+      more_details: structuredDetails,
       publish: publish !== undefined ? publish : true,
     });
 
     await product.save();
 
     res.status(201).json({
-        error : false ,
+      error: false,
       success: true,
       message: "Product added successfully",
       product,
     });
   } catch (err) {
     res.status(500).json({
-        error : true ,
+      error: true,
       success: false,
       message: err.message,
     });
