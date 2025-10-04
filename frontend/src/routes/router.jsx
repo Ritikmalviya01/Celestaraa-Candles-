@@ -17,6 +17,11 @@ import AddTestimonials from "../Modules/admin/pages/AddTestimonials";
 import ViewTestimonials from "../Modules/admin/pages/ViewTestimonials";
 import AddProduct from "../Modules/admin/pages/AddProduct";
 import ViewProduct from "../Modules/admin/pages/ViewProduct";
+import ViewUsers from "../Modules/admin/pages/ViewUsers";
+import ViewOrders from "../Modules/admin/pages/ViewOrders";
+import CompletedOrders from "../Modules/admin/pages/CompletedOrders";
+import DeleteBlogs from "../Modules/admin/pages/DeleteBlogs";
+import AddBlogs from "../Modules/admin/pages/AddBlogs";
 
 
 
@@ -77,7 +82,27 @@ const router = createBrowserRouter([
            {
             path:"view-products",
             element:<ViewProduct/>
-          }
+          },
+           {
+            path:"view-users",
+            element:<ViewUsers/>
+          },
+           {
+            path:"view-orders",
+            element:<ViewOrders/>
+          },
+          {
+            path:"completed-orders",
+            element:<CompletedOrders/>
+          },
+          {
+            path:"add-blogs",
+            element:<AddBlogs/>
+          },
+           {
+            path:"delete-blogs",
+            element:<DeleteBlogs/>
+          },
         ]
       }
 
