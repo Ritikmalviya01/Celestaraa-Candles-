@@ -152,7 +152,14 @@ export async function loginController(req, res) {
       message: "Login successfull",
       error: false,
       success: true,
-      data: { accessToken, refreshToken },
+      data: { accessToken, refreshToken,
+        user: {
+          id : user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        }
+       },
     });
   } catch (error) {
     return res.status(500).json({
@@ -457,7 +464,6 @@ export const getAllProductsForUser = async (req, res) => {
     // Only return published products
     const products = await ProductModel.find({ publish: true })
       .populate("category", "name")      // show category name only
-      .populate("subCategory", "name"); // show subCategory name only
 
     res.json({
       success: true,
@@ -471,6 +477,32 @@ export const getAllProductsForUser = async (req, res) => {
   }
 };
 
+export const getProductById = async (req, res) => {
+  try {
+    const { _id } = req.params; // get product ID from URL
+
+    // Find product by ID and only published products
+    const product = await ProductModel.findOne({ _id: _id, publish: true })
+      .populate("category", "name"); // populate category name only
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      product,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
 
 export const addToCart = async (req, res) => {
   try {

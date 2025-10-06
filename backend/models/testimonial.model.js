@@ -5,16 +5,16 @@ const testimonialSchema = new mongoose.Schema({
     type: String,
     required: true, // customer name
   },
-  message: {
+  description: {
     type: String,
     required: true, // feedback/testimonial
   },
-  rating: {
-    type: Number,
-    min: 1,
-    max: 5,
-    default: 5, // star rating out of 5
-  },
+  // rating: {
+  //   type: Number,
+  //   min: 1,
+  //   max: 5,
+  //   default: 5, // star rating out of 5
+  // },
   image: {
     type: String,
     default: "", // optional customer photo/avatar

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios"
 
 // Dummy data for now (replace with API/Context data later)
 const dummyTestimonials = [
@@ -37,7 +38,35 @@ const dummyTestimonials = [
 ];
 
 const ViewTestimonials = () => {
-  const [testimonials, setTestimonials] = useState(dummyTestimonials);
+
+   const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/admin/list-testimonials",
+          { withCredentials: true } // keep only if route is protected
+        );
+
+        // ✅ Access the correct field from backend response
+        setTestimonials(response.data?.data || []);
+      } catch (err) {
+        console.error("Error fetching testimonials:", err);
+        setError(err.response?.data?.message || "Failed to load testimonials");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  if (loading) return <p>Loading testimonials...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+ 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fdfcfb] to-[#f7f3f0] py-12 px-6">
@@ -63,9 +92,7 @@ const ViewTestimonials = () => {
             {/* Content */}
             <div className="text-center mt-4">
               <h3 className="text-lg font-semibold text-[#4b3f34]">{t.name}</h3>
-              <p className="text-sm text-[#6a5c4c]">
-                {t.role} • {t.city}
-              </p>
+             
               <p className="text-gray-600 text-sm mt-3 italic">“{t.description}”</p>
             </div>
           </div>

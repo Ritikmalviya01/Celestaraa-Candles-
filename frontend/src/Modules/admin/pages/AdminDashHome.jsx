@@ -16,7 +16,7 @@ console.log("nothingd")
     }));
   };
   return (
-    <div className="w-full lg:px-4 lg:py-6 flex flex-col gap-6">
+    <div className="w-full lg:px-4 lg:py-6 bg-bg flex flex-col gap-6">
       <div className="hidden lg:block">
         <Link to={"/"}>
           <img  alt="logoSidebar" />

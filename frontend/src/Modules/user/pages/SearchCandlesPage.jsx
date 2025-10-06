@@ -2,6 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import ProductCard from "../../../components/ProductCard";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { SearchQuery } from "../../../components/Context";
+import axios from "axios"
+import {Link} from "react-router-dom"
+
 
 const FilterSection = ({ title, options, selected, onChange }) => {
   const [open, setOpen] = useState(true);
@@ -91,6 +94,22 @@ const FilterSection = ({ title, options, selected, onChange }) => {
 };
 
 const SearchCandlesPage = () => {
+  const [ productDetails , setProductDetails] = useState([])
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/user/products",
+          {withCredentials: true,}
+         );
+        setProductDetails(response.data?.products); 
+        console.log(response.data)// use response.data
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts(); // call the async function
+  }, []); 
   const value = useContext(SearchQuery);
 
   const products = [
@@ -270,7 +289,7 @@ const SearchCandlesPage = () => {
   };
 
   // apply filters + search term
-  const filteredProducts = products.filter((p) => {
+  const filteredProducts = productDetails.filter((p) => {
     const [minPrice, maxPrice] = filters["Price"];
 
     if (minPrice !== null && p.price < minPrice) return false;
@@ -278,55 +297,55 @@ const SearchCandlesPage = () => {
 
     if (
       filters["Aroma Level"].length > 0 &&
-      !filters["Aroma Level"].includes(p.aromaLevel)
+      !filters["Aroma Level"].includes(p.more_details?.aromaLevel)
     )
       return false;
 
     if (
       filters["Aroma Type"].length > 0 &&
-      !filters["Aroma Type"].includes(p.aromaType)
+      !filters["Aroma Type"].includes(p.more_details?.aromaType)
     )
       return false;
 
     if (
       filters["Product Size"].length > 0 &&
-      !filters["Product Size"].includes(p.size)
+      !filters["Product Size"].includes(p.more_details?.size)
     )
       return false;
 
     if (
       filters["Burn Time"].length > 0 &&
-      !filters["Burn Time"].includes(p.burnTime)
+      !filters["Burn Time"].includes(p.more_details?.burnTime)
     )
       return false;
 
     if (
       filters["Wax Type"].length > 0 &&
-      !filters["Wax Type"].includes(p.waxType)
+      !filters["Wax Type"].includes(p.more_details?.waxType)
     )
       return false;
 
     if (
       filters["Wick Type"].length > 0 &&
-      !filters["Wick Type"].includes(p.wickType)
+      !filters["Wick Type"].includes(p.more_details?.wickType)
     )
       return false;
 
-    if (filters["Color"].length > 0 && !filters["Color"].includes(p.color))
+    if (filters["Color"].length > 0 && !filters["Color"].includes(p.more_details?.color))
       return false;
 
     if (
       filters["Eco-Friendly"].length > 0 &&
-      !filters["Eco-Friendly"].every((f) => p.ecoFriendly.includes(f))
+      !filters["Eco-Friendly"].every((f) => p.more_details?.ecoFriendly.includes(f))
     )
       return false;
 
-    if (filters["Rating"].includes("4★ & up") && p.rating < 4) return false;
-    if (filters["Rating"].includes("3★ & up") && p.rating < 3) return false;
+    if (filters["Rating"].includes("4★ & up") && p.more_details?.rating < 4) return false;
+    if (filters["Rating"].includes("3★ & up") && p.more_details?.rating < 3) return false;
 
     if (
       filters["Occasion"].length > 0 &&
-      !filters["Occasion"].includes(p.occasion)
+      !filters["Occasion"].includes(p.more_details?.occasion)
     )
       return false;
 
@@ -335,7 +354,7 @@ const SearchCandlesPage = () => {
       const searchLower = value.SearchTerm.toLowerCase();
       if (
         !p.name.toLowerCase().includes(searchLower) &&
-        !p.desc.toLowerCase().includes(searchLower)
+        !p.description.toLowerCase().includes(searchLower)
       ) {
         return false;
       }
@@ -391,18 +410,18 @@ const SearchCandlesPage = () => {
             />
           ))}
         </aside>
-
         <div className="cardMainRight h-[77vh] overflow-y-scroll w-3/4 grid  gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
           {filteredProducts.length === 0 ? (
             <div>No Candles Found</div>
           ) : (
             filteredProducts.map((eachProduct, i) => (
-              <ProductCard key={i} eachProduct={eachProduct} />
+              <Link to={`/search-candles/${eachProduct._id}`} key={i}>
+               <ProductCard key={i} eachProduct={eachProduct} /></Link>
             ))
           )}
         </div>
+        </div>
       </div>
-    </div>
   );
 };
 
