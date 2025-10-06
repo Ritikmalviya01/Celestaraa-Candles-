@@ -102,9 +102,7 @@ const TestimonialCarousel = () => {
                 <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold font-heading text-black mb-1">
                   {testimonial.name}
                 </h3>
-                <p className="text-sm sm:text-base font-semibold font-heading text-gray-600">
-                  {testimonial.title}, {testimonial.location}
-                </p>
+              
               </div>
             </div>
           ))}

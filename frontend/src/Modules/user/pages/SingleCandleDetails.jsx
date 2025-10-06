@@ -3,16 +3,62 @@ import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import candleImg from "../../../assets/candleCardImage.svg"
 import LandingPageCardsSection from '../../../components/LandingPageCardsSection';
-
+import { Link, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import axios from "axios"
+import ProductCard from '../../../components/ProductCard';
 const SingleCandleDetails = () => {
+  const { _id } = useParams(); 
   const [quantity, setQuantity] = useState(1);
   const [openSection, setOpenSection] = useState(null);
+    const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+   const [ productDetails , setProductDetails] = useState([])
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/user/products",
+          {withCredentials: true,}
+         );
+        setProductDetails(response.data?.products); 
+        console.log(response.data)// use response.data
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts(); // call the async function
+  }, []); 
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/user/singleProduct/${_id}`,
+          { withCredentials: true } // optional if your backend uses cookies
+        );
+        setProduct(response.data?.product);
+        console.log(response.data) // assuming your API returns product data in response.data
+      } catch (err) {
+        console.error("Error fetching product:", err);
+        setError("Failed to load product");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, []);
+
+  if (loading) return <p>Loading product...</p>;
+  if (error) return <p>{error}</p>;
 
   const toggleSection = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
   return (
-    <div>
+    <div className='bg-bg'>
         <div className=" bg-bg p-6 md:p-6">
       <div className="">
         <div className="flex flex-col md:flex-row gap-8">
@@ -31,11 +77,10 @@ const SingleCandleDetails = () => {
               {/* Title and Price */}
               <div className="flex justify-between items-start">
                 <h1 className="text-4xl font-serif text-gray-900">
-                  Vanilla Relax Candle
+                  {product.name}
                 </h1>
                 <div className="text-right">
-                  <span className="text-3xl font-semibold text-gray-900">$20</span>
-                  <span className="text-xl text-gray-400 line-through ml-2">$24</span>
+                  <span className="text-3xl font-semibold text-gray-900">Rs.{product.price}</span>
                 </div>
               </div>
 
@@ -48,11 +93,10 @@ const SingleCandleDetails = () => {
                     </svg>
                   ))} */}
                 </div>
-                <span className="text-gray-600">12 reviews</span>
+                <span className="text-gray-600">12 Reviews - {product.more_details.rating}</span>
               </div>
 
               {/* Subtitle */}
-              <p className="text-gray-600 text-lg">Like the scent of the mountains</p>
 
               {/* Quantity and Add to Cart */}
               <div className="flex gap-4 mt-6">
@@ -89,7 +133,7 @@ const SingleCandleDetails = () => {
                   </button>
                   {openSection === 'description' && (
                     <div className="pb-4 text-gray-600">
-                      <p>Experience the calming essence of vanilla with our handcrafted Relax Candle. Perfect for creating a serene atmosphere in any room.</p>
+                      <p>{product.description}</p>
                     </div>
                   )}
                 </div>
@@ -105,7 +149,7 @@ const SingleCandleDetails = () => {
                   </button>
                   {openSection === 'ingredients' && (
                     <div className="pb-4 text-gray-600">
-                      <p>Natural soy wax, vanilla essential oil, cotton wick, and eco-friendly fragrance blend.</p>
+                      <p>Made with {product.more_details?.waxType}, Aroma Type "{product.more_details?.aromaType}", cotton wick, and eco-friendly fragrance blend.</p>
                     </div>
                   )}
                 </div>
@@ -148,7 +192,20 @@ const SingleCandleDetails = () => {
       </div>
     </div>
     <div className='similar-cards'>
-   <LandingPageCardsSection />
+   {/* <ProductCard /> */}
+   <h2 className='flex justify-center font-heading text-5xl my-10'>More Candles</h2>
+
+               <div className="cardMainRight p-6 h-[77vh]  w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 
+                  overflow-x-auto lg:overflow-x-hidden">
+          {productDetails.length === 0 ? (
+            <div>No Candles Found</div>
+          ) : (
+            productDetails.slice(0, 4).map((eachProduct, i) => (
+              <Link to={`/search-candles/${eachProduct._id}`} >
+               <ProductCard key={i} eachProduct={eachProduct} /></Link>
+            ))
+          )}
+        </div>
     </div>
     </div>
   );

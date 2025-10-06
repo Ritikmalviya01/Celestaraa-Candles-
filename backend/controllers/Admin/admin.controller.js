@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import generatedAccessToken from "../../utils/generatedAccessToken.js";
 import generatedRefreshToken from "../../utils/generatedRefreshToken.js";
-
+import uploadImageCloudinary from "../../utils/uploadImageCloudinary.js"
 
 export async function AdminLoginController(req, res) {
   try {
@@ -142,11 +142,17 @@ export const getOrderDetails = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+
 export const addProduct = async (req, res) => {
   try {
     const {
       name,
-      image,
       category,
       subCategory,
       unit,
@@ -158,7 +164,6 @@ export const addProduct = async (req, res) => {
       publish,
     } = req.body;
 
-    // Basic validation
     if (!name || !price || !category || category.length === 0) {
       return res.status(400).json({
         success: false,
@@ -166,24 +171,37 @@ export const addProduct = async (req, res) => {
       });
     }
 
-    // ✅ Build structured more_details safely
+    console.log("req.body:", req.body);
+    console.log("req.files:", req.files);
+
+    // ✅ Upload images
+    const imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const uploaded = await uploadImageCloudinary(file);
+        imageUrls.push(uploaded.secure_url);
+      }
+    }
+
+    // ✅ Parse more_details safely
+    const moreDetailsObj = typeof more_details === "string" ? JSON.parse(more_details) : more_details || {};
     const structuredDetails = {
-      aromaLevel: more_details?.aromaLevel || null,
-      aromaType: more_details?.aromaType || null,
-      productSize: more_details?.productSize || null,
-      burnTime: more_details?.burnTime || null,
-      waxType: more_details?.waxType || null,
-      wickType: more_details?.wickType || null,
-      priceRange: more_details?.priceRange || null,
-      color: more_details?.color || null,
-      ecoFriendly: more_details?.ecoFriendly || [],
-      rating: more_details?.rating || null,
-      occasion: more_details?.occasion || null,
+      aromaLevel: moreDetailsObj.aromaLevel || null,
+      aromaType: moreDetailsObj.aromaType || null,
+      productSize: moreDetailsObj.productSize || null,
+      burnTime: moreDetailsObj.burnTime || null,
+      waxType: moreDetailsObj.waxType || null,
+      wickType: moreDetailsObj.wickType || null,
+      priceRange: moreDetailsObj.priceRange || null,
+      color: moreDetailsObj.color || null,
+      ecoFriendly: moreDetailsObj.ecoFriendly || [],
+      rating: moreDetailsObj.rating || null,
+      occasion: moreDetailsObj.occasion || null,
     };
 
     const product = new ProductModel({
       name,
-      image: image || [],
+      image: imageUrls,
       category,
       subCategory: subCategory || [],
       unit: unit || "",
@@ -204,6 +222,7 @@ export const addProduct = async (req, res) => {
       product,
     });
   } catch (err) {
+    console.error(err); // <-- log the exact error
     res.status(500).json({
       error: true,
       success: false,
@@ -213,11 +232,11 @@ export const addProduct = async (req, res) => {
 };
 
 
+
 export const listProducts = async (req, res) => {
   try {
     const products = await ProductModel.find()
       .populate("category", "name")
-      .populate("subCategory", "name")
       .sort({ createdAt: -1 }); // newest first
 
     res.json({
@@ -269,19 +288,19 @@ import TestimonialModel from "../../models/testimonial.model.js";
 // ✅ Add Testimonial
 export const addTestimonial = async (req, res) => {
   try {
-    const { name, message, rating, image } = req.body;
+    const { name, description, image } = req.body;
 
-    if (!name || !message) {
+    if (!name || !description) {
       return res.status(400).json({
         success: false,
-        message: "Name and message are required",
+        message: "Name and description are required",
       });
     }
 
     const testimonial = new TestimonialModel({
       name,
-      message,
-      rating: rating || 5,
+      description,
+      // rating: rating || 5,
       image: image || "",
     });
 
