@@ -22,7 +22,8 @@ import ViewOrders from "../Modules/admin/pages/ViewOrders";
 import CompletedOrders from "../Modules/admin/pages/CompletedOrders";
 import DeleteBlogs from "../Modules/admin/pages/DeleteBlogs";
 import AddBlogs from "../Modules/admin/pages/AddBlogs";
-
+import UserSideBar from "../layout/UserSideBar"
+import UserDashBoard from "../Modules/user/pages/UserDashBoard";
 
 
 const router = createBrowserRouter([
@@ -62,6 +63,16 @@ const router = createBrowserRouter([
         path: "/Blogs",
         element: <CandleBlog />
       }
+,
+ {
+        path:"/user",
+        element:<UserSideBar/>,
+        children:[
+          {
+            index:true,
+            element:<UserDashBoard/>
+          },]
+        }
 ,
       {
         path:"/admin",

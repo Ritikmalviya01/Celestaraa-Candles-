@@ -5,12 +5,11 @@ import { TiThMenu } from "react-icons/ti";
 import { FaUserAlt } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import Search from "../components/Search";
+import { Outlet, useLocation } from "react-router-dom";
 
 const Header = () => {
-
-
-
-
+  const location = useLocation();
+  console.log("Location - ",location)
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
 
@@ -19,7 +18,7 @@ const Header = () => {
   return (
     <header className=" sticky shadow-2xl top-0 py-2.5 px-6 flex justify-center flex-col bg-bg z-50">
       <div className="container p-2 mx-auto items-center  flex justify-between text-neutral-400">
-        <Link to="/">
+      { !(location.pathname.startsWith("/user") || location.pathname.startsWith("/admin")) && <Link to="/">
           <div className="h-full">
             <div className="h-full flex justify-center items-center ">
               <img
@@ -32,6 +31,7 @@ const Header = () => {
             </div>
           </div>
         </Link>
+}
 
         <div className="search hidden lg:block">
           <Search />

@@ -3,14 +3,17 @@ import HeroBanner from '../components/HeroBaner'
 import Features from '../components/Features'
 import LandingPageCardsSection from '../components/LandingPageCardsSection'
 import TestimonialCarousel from '../components/TestimonialCarousel'
-
+import OurStory from '../components/OurStory'
 const Home = () => {
   return (
     <div className='bg-bg  '>
       <HeroBanner />
       <LandingPageCardsSection/>
+      <hr  className='py-6'/>
       <Features />
-      <TestimonialCarousel />
+   <OurStory/>
+          <TestimonialCarousel />
+    
     </div>
   )
 }
