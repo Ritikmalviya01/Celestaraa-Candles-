@@ -27,7 +27,7 @@ const moreDetailsSchema = new mongoose.Schema(
       enum: ["Single Wick", "Multi Wick", "Wooden Wick"],
     },
     priceRange: {
-      type: String, // or Number if you want range dynamically
+      type: String, 
     },
     color: {
       type: String,
