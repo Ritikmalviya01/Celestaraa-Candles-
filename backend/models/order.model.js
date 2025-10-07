@@ -33,12 +33,11 @@ paymentId : {
     type : String ,
     default : "" ,
 },
-payment_status : {
-    type : String ,
-   
-    default : "" ,
-},
-delivery_address:{
+payment_status: {
+  type: String,
+  enum: ["pending", "paid", "failed", ""],
+  default: "pending",
+},ery_address:{
     type : mongoose.Schema.ObjectId ,
     ref : 'address'
 },

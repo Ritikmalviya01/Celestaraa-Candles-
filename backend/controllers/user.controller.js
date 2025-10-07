@@ -11,6 +11,7 @@ import jwt from "jsonwebtoken";
 import cartProductModel from "../models/cartProduct.model.js"
 import orderModel from "../models/order.model.js"
 import ProductModel from "../models/product.model.js";
+import AddressModel from "../models/address.model.js";
 
 export async function registerUserController(req, res) {
   try {
@@ -507,7 +508,7 @@ export const getProductById = async (req, res) => {
 export const addToCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
-    const userId = req.user._id; // assume you have middleware for authentication
+    const userId = req.userId; // assume you have middleware for authentication
 
     // check if product already in cart
     let cartItem = await cartProductModel.findOne({ userId, product: productId });
@@ -536,12 +537,14 @@ export const addToCart = async (req, res) => {
 
 export const getCart = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.userId;
 
     const cart = await cartProductModel.find({ userId })
       .populate("product") // show product details
       .lean();
-
+if (!cart || cart.length === 0) {
+      return res.json({ success: true, cart: [], message: "Cart is empty" });
+    }
     res.json({ success: true, cart });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -569,6 +572,7 @@ export const updateCart = async (req, res) => {
 // DELETE /cart/remove/:id
 export const removeCart = async (req, res) => {
   try {
+  
         const { cartItemId } = req.body;
 
     await cartProductModel.findByIdAndDelete(cartItemId);
@@ -628,3 +632,52 @@ export const checkout = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+
+// controllers/userController.js
+// controllers/userController.js
+
+
+export const addUserAddress = async (req, res) => {
+  try {
+    const { name, phone, address, city, zipCode } = req.body;
+    const userId = req.userId;
+
+    if (!name || !phone || !address || !city || !zipCode) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    // Create address document
+    const newAddress = new AddressModel({
+      user: userId,
+      name,
+      phone,
+      address,
+      city,
+      zipCode,
+    });
+    await newAddress.save();
+
+    // Add address reference to user
+    await UserModel.findByIdAndUpdate(userId, {
+      $push: { address_details: newAddress._id },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Address added successfully",
+      address: newAddress,
+    });
+  } catch (error) {
+    console.error("Error adding address:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+

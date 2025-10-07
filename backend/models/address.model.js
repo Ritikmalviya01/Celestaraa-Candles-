@@ -1,36 +1,34 @@
 import mongoose from "mongoose";
 
 const addressSchema = new mongoose.Schema({
-    address_line : {
-        type : String ,
-        default : "" ,
-    },
-    city : {
-        type : String,
-        default : "",
-    },
-    state : {
-        type : String ,
-        default : "" ,
-    },
-    pincode :{
-        type : Number ,
-    },
-    country :{
-        type : String ,
-    },
-    mobile :{
-        type : Number ,
-        default : null ,
-    },
-    status : {
-        type : Boolean,
-        default : true ,
-    }
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  zipCode: {
+    type: String,
+    required: true,
+  },
 }, {
-    timeStamps : true
-})
+  timestamps: true,
+});
 
-
-const AddressModel = mongoose.model("address" , addressSchema);
+const AddressModel = mongoose.model("address", addressSchema);
 export default AddressModel;
