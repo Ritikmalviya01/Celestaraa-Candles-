@@ -1,134 +1,146 @@
-import React, { useState, useEffect } from 'react';
-import arrow from "../assets/arrowTestimonial.png"
+import React, { useState, useEffect } from "react";
+import arrow from "../assets/arrowTestimonial.png";
+
 const TestimonialCarousel = () => {
   const testimonials = [
     {
       id: 1,
-      text: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+      text: "Working with this team was a pleasure! They understood our vision perfectly and delivered beyond expectations.",
       name: "Ritesh",
       title: "Creative Director",
       location: "New York",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+      avatar:
+         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
     },
     {
       id: 2,
-      text: "The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, making it look like readable English.",
-      name: "Rohan ",
+      text: "Their professionalism and commitment to quality stood out. The project came out beautifully and on time!",
+      name: "Rohan",
       title: "Product Manager",
       location: "San Francisco",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
     },
     {
       id: 3,
-      text: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.",
+      text: "They turned our ideas into a stunning digital experience. Highly recommend for creative and reliable work.",
       name: "Ritik",
       title: "UX Designer",
-      location: "Ritik",
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
+      location: "Delhi",
+      avatar:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
     },
     {
-      id: 4, 
-      text: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature.",
+      id: 4,
+      text: "Outstanding service and excellent communication throughout. I look forward to collaborating again!",
       name: "Rupesh",
       title: "Frontend Developer",
       location: "Seattle",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
-    }
+      avatar:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
+    },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
+      setCurrentIndex((prevIndex) =>
         prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
       );
-    }, 3000); 
-
+    }, 4000);
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
-  const goToSlide = (index) => {
-    setCurrentIndex(index);
-  };
-
-  
+  const goToSlide = (index) => setCurrentIndex(index);
 
   return (
-   <>
-   <h1 className='flex justify-center font-bold font-heading text-4xl'>Testimonial</h1>
-    <div className="w-full   flex items-center">
-    
-      <div className="w-full    rounded-xl sm:rounded-2xl  p-6 sm:p-8 lg:p-12 relative overflow-hidden">
-        {/* Testimonials Container */}
-        <div 
-          className="flex transition-transform duration-500 ease-in-out"
+    <section className="py-20 bg-gradient-to-b from-[#F8F4EF] to-[#F2EAE1]">
+      {/* Heading */}
+      <h2 className="text-4xl md:text-5xl font-extrabold text-center text-gray-800 mb-14 font-heading">
+        What Our <span className="text-primary">Clients Say</span>
+      </h2>
+
+      {/* Carousel Wrapper */}
+      <div className="relative max-w-6xl mx-auto overflow-hidden">
+        <div
+          className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {testimonials.map((testimonial, index) => (
-            <div key={testimonial.id} className="w-full h- flex-shrink-0 text-center px-4 sm:px-8">
-              {/* Quote Icon */}
-              <div className="mb-6 sm:mb-8">
-                <svg 
-                  className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-primary mx-auto opacity-60" 
-                  fill="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-                </svg>
-              </div>
+          {testimonials.map((t) => (
+            <div
+              key={t.id}
+              className="w-full flex-shrink-0 flex flex-col md:flex-row items-center md:items-center justify-center text-center md:text-left px-6 sm:px-10"
+            >
+              <div className="bg-white shadow-lg hover:shadow-2xl transition-all duration-700 rounded-3xl border border-gray-100 p-6 sm:p-14 flex flex-col md:flex-row items-center md:space-x-10 space-y-8 md:space-y-0 max-w-5xl mx-auto relative">
+                {/* Gradient Accent */}
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-teal-100 to-transparent opacity-0 hover:opacity-40 rounded-3xl transition-opacity duration-700"></div>
 
-              {/* Testimonial Text */}
-              <p className="text-base sm:text-lg lg:text-xl text-gray-700 font-heading font-bold  leading-relaxed max-w-3xl mx-auto px-2">
-                {testimonial.text}
-              </p>
+                {/* Avatar */}
+                <div className="flex-shrink-0 flex justify-center md:justify-start relative z-10">
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    className="w-32 h-32 sm:w-44 sm:h-44 rounded-full border-4 border-primary shadow-md object-cover transform hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
 
-              {/* Arrow Line */}
-              <div className="mb-4 flex justify-center ">
-               <img src={arrow} alt="" className='' />
-              </div>
+                {/* Text Section */}
+                <div className="flex-1 relative z-10">
+                  <div className="flex justify-between items-center max-sm:flex-col max-sm:justify-center  gap-4">
+                    <div className="">
+                      <h3 className="text-3xl  md:text-4xl font-bold text-gray-800 mb-1">
+                        {t.name}
+                      </h3>
+                      <p className="text-gray-600 text-base md:text-lg font-medium">
+                        {t.title} • {t.location}
+                      </p>
+                    </div>
 
-              {/* Avatar */}
-              <div className="mb-4 sm:mb-6">
-                <img 
-                  src={testimonial.avatar}
-                  alt={testimonial.name}
-                  className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full mx-auto border-3 sm:border-4 border-primary/70 s"
-                />
-              </div>
+                    {/* Quote Icon */}
+                    <svg
+                      className="w-10 h-10 text-primary opacity-60  "
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z" />
+                    </svg>
+                  </div>
 
-              {/* Name and Title */}
-              <div>
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold font-heading text-black mb-1">
-                  {testimonial.name}
-                </h3>
-              
+                  {/* Description */}
+                  <p className="mt-6 text-lg md:text-xl text-gray-700 leading-relaxed italic">
+                    “{t.text}”
+                  </p>
+
+                  {/* Divider Arrow */}
+                  {/* <div className="flex justify-center md:justify-start mt-6">
+                    <img
+                      src={arrow}
+                      alt="divider"
+                      className="w-28 opacity-60"
+                    />
+                  </div> */}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-      
-
-        {/* Dots Indicator */}
-        <div className="flex justify-center mt-6 sm:mt-8 space-x-2">
-          {testimonials.map((_, index) => (
+        {/* Dots */}
+        <div className="flex justify-center mt-10 space-x-3">
+          {testimonials.map((_, i) => (
             <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors duration-200 ${
-                index === currentIndex 
-                  ? 'bg-teal-500' 
-                  : 'bg-gray-300 hover:bg-gray-400'
+              key={i}
+              onClick={() => goToSlide(i)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                i === currentIndex ? "bg-primary scale-125" : "bg-gray-300"
               }`}
             />
           ))}
         </div>
       </div>
-    </div>
-    </>
+    </section>
   );
-  
 };
 
 export default TestimonialCarousel;

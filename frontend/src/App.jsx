@@ -10,7 +10,7 @@ import { SearchQuery } from "./components/Context";
 function App() {   
   const location = useLocation();
   const hideLayoutOnPaths = [
-    "/buyer",
+    "/user",
     "/admin",
     
     
