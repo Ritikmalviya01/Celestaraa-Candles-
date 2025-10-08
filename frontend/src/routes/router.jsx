@@ -24,6 +24,7 @@ import DeleteBlogs from "../Modules/admin/pages/DeleteBlogs";
 import AddBlogs from "../Modules/admin/pages/AddBlogs";
 import UserSideBar from "../layout/UserSideBar"
 import UserDashBoard from "../Modules/user/pages/UserDashBoard";
+import ViewPendingOrders from "../Modules/user/pages/ViewPendingOrders";
 
 
 const router = createBrowserRouter([
@@ -71,7 +72,16 @@ const router = createBrowserRouter([
           {
             index:true,
             element:<UserDashBoard/>
-          },]
+          },
+        {
+          path:"pending-orders",
+          element:<ViewPendingOrders/>
+        },
+       {
+          path:"completed-orders",
+          element:<CompletedOrders/>
+        }
+      ]
         }
 ,
       {

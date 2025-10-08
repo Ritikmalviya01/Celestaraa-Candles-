@@ -1,21 +1,20 @@
-import React from 'react'
-import HeroBanner from '../components/HeroBaner'
-import Features from '../components/Features'
-import LandingPageCardsSection from '../components/LandingPageCardsSection'
-import TestimonialCarousel from '../components/TestimonialCarousel'
-import OurStory from '../components/OurStory'
+import React from "react";
+import HeroBanner from "../components/HeroBaner";
+import Features from "../components/Features";
+import LandingPageCardsSection from "../components/LandingPageCardsSection";
+import TestimonialCarousel from "../components/TestimonialCarousel";
+import OurStory from "../components/OurStory";
 const Home = () => {
   return (
-    <div className='bg-bg  '>
+    <div className="bg-bg  ">
       <HeroBanner />
-      <LandingPageCardsSection/>
-      <hr  className='py-6'/>
-      <Features />
-   <OurStory/>
-          <TestimonialCarousel />
-    
-    </div>
-  )
-}
+      <LandingPageCardsSection />
 
-export default Home                   
+      <Features />
+      <OurStory />
+      <TestimonialCarousel />
+    </div>
+  );
+};
+
+export default Home;
