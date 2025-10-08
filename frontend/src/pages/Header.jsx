@@ -9,7 +9,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
-  console.log("Location - ",location)
+  console.log("Location - ", location);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
 
@@ -18,20 +18,24 @@ const Header = () => {
   return (
     <header className=" sticky shadow-2xl top-0 py-2.5 px-6 flex justify-center flex-col bg-bg z-50">
       <div className="container p-2 mx-auto items-center  flex justify-between text-neutral-400">
-      { !(location.pathname.startsWith("/user") || location.pathname.startsWith("/admin")) && <Link to="/">
-          <div className="h-full">
-            <div className="h-full flex justify-center items-center ">
-              <img
-                width={170}
-                height={45}
-                alt="Logo"
-                className="hidden lg:block"
-              />
-              <img width={170} height={45} alt="Logo" className="lg:hidden" />
+        {!(
+          location.pathname.startsWith("/user") ||
+          location.pathname.startsWith("/admin")
+        ) && (
+          <Link to="/">
+            <div className="h-full">
+              <div className="h-full flex justify-center items-center ">
+                <img
+                  width={170}
+                  height={45}
+                  alt="Logo"
+                  className="hidden lg:block"
+                />
+                <img width={170} height={45} alt="Logo" className="lg:hidden" />
+              </div>
             </div>
-          </div>
-        </Link>
-}
+          </Link>
+        )}
 
         <div className="search hidden lg:block">
           <Search />
@@ -78,9 +82,11 @@ const Header = () => {
                 <FaCartShopping size={20} />
               </button>
             </Link>
-            <button className="hidden lg:block">
-              <FaUserAlt size={20} />
-            </button>
+            <Link to="/user">
+              <button className="hidden lg:block">
+                <FaUserAlt size={20} />
+              </button>
+            </Link>
             <button
               onClick={() => setIsMobileOpen(!isMobileOpen)}
               className="lg:hidden"

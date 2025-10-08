@@ -9,6 +9,18 @@ export const linksUser = [
     icon: <LuLayoutDashboard size={22} />,
     path: "/user",
   },
+  {
+    type: "link",
+    name: "Pending Orders",
+    icon: <LuLayoutDashboard size={22} />,
+    path: "/user/pending-orders",
+  },
+  {
+    type: "link",
+    name: "Completed Orders",
+    icon: <LuLayoutDashboard size={22} />,
+    path: "/user/completed-orders",
+  },
 //   {
 //     type: "dropdown",
 //     section: "Products",
