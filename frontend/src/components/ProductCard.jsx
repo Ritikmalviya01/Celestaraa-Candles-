@@ -29,7 +29,7 @@ const ProductCard = ({ eachProduct }) => {
   };
 
   return (
-    <div className="card1 h-fit font-heading flex flex flex-col gap-6 grid-cols-1">
+    <div className="card1 h-fit font-heading  flex flex-col gap-6 grid-cols-1">
       <div className="image w-full">
         <img
           className="w-full h-full object-cover"

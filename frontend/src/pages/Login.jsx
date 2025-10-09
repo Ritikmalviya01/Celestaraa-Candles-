@@ -4,12 +4,15 @@ import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import axios from "axios";
 import * as Yup from "yup";
+ import { useDispatch } from "react-redux";
+import { login } from "../redux/slices/authSlice.js"; // adjust path
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
- const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -22,39 +25,52 @@ const Login = () => {
 
   const initialValues = { email: "", password: "" };
 
-  const handleSubmit = async (values) => {
-    setIsSubmitting(true);
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/user/login",
-        values,
-        { withCredentials: true } // ensures cookies are sent if using JWT in cookies
-      );
+ 
 
-      // Response example: { success: true, user: { role: "ADMIN", name: "John" }, token: "..." }
-    const { data } = response.data;
-const user = data.user;
+const handleSubmit = async (values) => {
+  setIsSubmitting(true);
+  
 
-if (!user) {
-  alert("User data not received from server");
-  return;
-}
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/user/login",
+      values,
+      { withCredentials: true } // send cookies if using JWT
+    );
 
-if (user.role === "ADMIN") {
-  navigate("/admin");
-} else if (user.role === "USER") {
-  navigate("/search-candles/");
-} else {
-  alert("Unknown role");
-}
+    // Response example: { success: true, user: { role: "ADMIN", name: "John" }, token: "..." }
+    const user = response.data.data.user;
 
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Login failed");
-    } finally {
-      setIsSubmitting(false);
+    if (!user) {
+      alert("User data not received from server");
+      return;
     }
-  };
+
+    // Update Redux state
+    dispatch(
+      login({
+        user: { name: user.name, email: user.email }, // optional: pick what you need
+        role: user.role,
+      })
+    );
+
+    // Role-based navigation
+    if (user.role === "ADMIN") {
+      navigate("/admin/");
+    } else if (user.role === "USER") {
+      navigate("/search-candles/");
+    } else {
+      alert("Unknown role");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert(err.response?.data?.message || "Login failed");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="bg-primary/10 flex items-center justify-center min-h-screen p-4">

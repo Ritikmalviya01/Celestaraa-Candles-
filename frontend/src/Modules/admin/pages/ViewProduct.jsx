@@ -1,50 +1,41 @@
-
-
-
 import React, { useEffect, useState } from "react";
 import cardCandleImage from "../../../assets/candleCardImage.svg";
 import { IoMdAddCircle } from "react-icons/io";
 import axios from "axios" 
 import ProductCard from "../../../components/ProductCard";
+import AdminProductCad from "../components/AdminProductCad";
 
-const products = [
-  {
-    name: "Vanilla Relax",
-    price: 20,
-    oldPrice: 24,
-    desc: "Cake Smell",
-    discount: "17%", // ((24-20)/24 * 100)
-  },
-  {
-    name: "Beach Sunshine",
-    price: 40,
-    oldPrice: 44,
-    desc: "Enjoy the afternoon",
-    discount: "9%", // ((44-40)/44 * 100)
-  },
-  {
-    name: "Brown Relac",
-    price: 33,
-    oldPrice: 37,
-    desc: "Together in the afternoon",
-    discount: "11%", // ((37-33)/37 * 100)
-  },
-  {
-    name: "Moon Morning",
-    price: 34,
-    oldPrice: 38,
-    desc: "The scent of the morning",
-    discount: "11%", // ((38-34)/38 * 100)
-  },
-];
+
 
 const ViewProduct = () => {
 const [prductDetails , setProductDetails] = useState([])
+const handleDelete = async (productId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await axios.delete(
+        `http://localhost:8000/api/admin/delete-product`,
+        { 
+          data: { productId },
+          withCredentials: true }
+      );
+
+      if (res.data.success) {
+        alert(res.data.message);
+        // Remove deleted product from state
+        setProductDetails((prev) => prev.filter((p) => p._id !== productId));
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product.");
+    }
+  };
 
 useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/admin/products",
+        const response = await axios.get("http://localhost:8000/api/admin/listed-products",
           {withCredentials: true,}
          );
         setProductDetails(response.data?.products); 
@@ -68,7 +59,9 @@ useEffect(() => {
 
       <div className="cardMain grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-8">
         {prductDetails.map((eachProduct,i) => (
-          <ProductCard key={i} eachProduct={eachProduct} />
+          <AdminProductCad key={i} 
+          eachProduct={eachProduct} 
+          onDelete={handleDelete} />
         ))}
       </div>
     </div>

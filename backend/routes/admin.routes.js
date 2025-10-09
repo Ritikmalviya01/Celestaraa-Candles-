@@ -1,6 +1,6 @@
 import express from 'express';
 import {auth} from '../middleware/auth.js';
-import { addProduct, addTestimonial, AdminLoginController, deleteProduct, deleteTestimonial, listProducts, listTestimonials } from '../controllers/Admin/admin.controller.js';
+import { addProduct, addTestimonial, AdminLoginController, deleteProduct, deleteTestimonial, getOrders, listProducts, listTestimonials } from '../controllers/Admin/admin.controller.js';
 import bcrypt from "bcryptjs";
 import upload from '../middleware/multer.js';
 
@@ -26,11 +26,12 @@ adminRouter.post('/addProduct', auth(["ADMIN"]), upload.array("images") , addPro
 adminRouter.get('/products', auth(["ADMIN"]), listProducts);
 // router.put('/product/:id', adminAuth, updateProduct);
 adminRouter.delete('/product/:productId', auth(["ADMIN"]), deleteProduct);
-
+adminRouter.get('/listed-products' , auth(["ADMIN"]), listProducts)
+adminRouter.delete('/delete-product' , auth(["ADMIN"]), deleteProduct)
+adminRouter.get('/get-orders' , auth(["ADMIN"]), getOrders)
 adminRouter.post("/add-testimonial", auth(["ADMIN"]),upload.single("photo"), addTestimonial);
 adminRouter.get("/list-testimonials", listTestimonials); // anyone can view
 adminRouter.delete("/delete-testimonial/:testimonialId", auth(["ADMIN"]), deleteTestimonial);
-
 // // Users
 // router.get('/users', adminAuth, listUsers);
 
