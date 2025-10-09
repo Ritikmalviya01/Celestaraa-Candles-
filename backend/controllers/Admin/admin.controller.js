@@ -7,7 +7,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import generatedAccessToken from "../../utils/generatedAccessToken.js";
 import generatedRefreshToken from "../../utils/generatedRefreshToken.js";
-import uploadImageCloudinary from "../../utils/uploadImageCloudinary.js"
+import uploadImageCloudinary from "../../utils/uploadImageCloudinary.js";
+import TestimonialModel from "../../models/testimonial.model.js";
 
 export async function AdminLoginController(req, res) {
   try {
@@ -101,6 +102,40 @@ export const getDashboardStats = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
+export const getOrders = async (req, res) => {
+  try {
+    const orders = await OrderModel.find()
+      .populate({
+  path: "userId",
+  select: "name email phone address_details",
+  populate: { path: "address_details" }
+}) 
+      .populate("items.productId", "name price image") 
+      .sort({ createdAt: -1 }); 
+
+    if (!orders.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No orders found",
+      });
+    }
+
+    res.json({
+      success: true,
+      count: orders.length,
+      orders,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+
 
 export const getOrderDetails = async (req, res) => {
   try {
@@ -233,27 +268,44 @@ export const addProduct = async (req, res) => {
 
 
 
+// controllers/productController.js
+// controllers/productController.js
+
 export const listProducts = async (req, res) => {
   try {
-    const products = await ProductModel.find()
-      .populate("category", "name")
+    // Get all published products (you can remove the filter if you want all)
+    const products = await ProductModel.find({ publish: true })
       .sort({ createdAt: -1 }); // newest first
 
+    if (!products.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No products found.",
+      });
+    }
+
+    // Send full raw product details
     res.json({
       success: true,
+      count: products.length,
       products,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
+
+
 
 //edit api pending 
 
 
 export const deleteProduct = async (req, res) => {
   try {
-    const { productId } = req.params; // 👈 take productId from params
+    const { productId } = req.body; // 👈 now taking from body
 
     if (!productId) {
       return res.status(400).json({ success: false, message: "Product ID is required" });
@@ -283,7 +335,6 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
-import TestimonialModel from "../../models/testimonial.model.js";
 
 // ✅ Add Testimonial
 export const addTestimonial = async (req, res) => {

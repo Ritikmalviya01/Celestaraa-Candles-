@@ -10,6 +10,7 @@ import adminRouter from './routes/admin.routes.js';
 
 
 
+
 dotenv.config()
 
 const app = express();
@@ -40,6 +41,7 @@ app.get("/", (req,res) =>{
 
 app.use('/api/user' , userRouter );
 app.use('/api/admin', adminRouter);
+// app.use('/api' , blogRouter)
 
 
 

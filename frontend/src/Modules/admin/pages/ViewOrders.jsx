@@ -1,49 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Loader2, Package } from "lucide-react";
-// import axios from "axios"; // ready for backend API integration
+import axios from "axios";
 
 const ViewOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch orders (replace URL with your real backend)
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        // Example endpoint
-        // const res = await axios.get("/api/orders");
-        // setOrders(res.data);
-        // Temporary dummy data:
-        setTimeout(() => {
-          setOrders([
-            {
-              id: "ORD1001",
-              customerName: "Aditi Sharma",
-              email: "aditi@example.com",
-              city: "Mumbai",
-              totalAmount: 1499,
-              status: "Delivered",
-              orderDate: "2025-09-22",
-              items: [
-                { name: "Lavender Bliss Candle", qty: 2 },
-                { name: "Rose Delight Candle", qty: 1 },
-              ],
-            },
-            {
-              id: "ORD1002",
-              customerName: "Neha Patel",
-              email: "neha@example.com",
-              city: "Pune",
-              totalAmount: 899,
-              status: "Pending",
-              orderDate: "2025-09-30",
-              items: [{ name: "Vanilla Dream Candle", qty: 2 }],
-            },
-          ]);
-          setLoading(false);
-        }, 1000);
+        const res = await axios.get(
+          "http://localhost:8000/api/admin/get-orders", // your backend API
+          { withCredentials: true }
+        );
+
+        if (res.data.success) {
+          setOrders(res.data.orders);
+        } else {
+          setOrders([]);
+        }
       } catch (err) {
         console.error("Error fetching orders:", err);
+        setOrders([]);
+      } finally {
         setLoading(false);
       }
     };
@@ -90,7 +69,7 @@ const ViewOrders = () => {
               <tr>
                 <th className="py-3 px-4 font-semibold">Order ID</th>
                 <th className="py-3 px-4 font-semibold">Customer</th>
-                <th className="py-3 px-4 font-semibold">City</th>
+                <th className="py-3 px-4 font-semibold">Address</th>
                 <th className="py-3 px-4 font-semibold">Items</th>
                 <th className="py-3 px-4 font-semibold">Total</th>
                 <th className="py-3 px-4 font-semibold">Status</th>
@@ -100,36 +79,33 @@ const ViewOrders = () => {
             <tbody>
               {orders.map((order, index) => (
                 <tr
-                  key={order.id}
-                  className={`border-t ${
-                    index % 2 === 0 ? "bg-white" : "bg-[#fcfaf8]"
-                  } hover:bg-[#fefaf7] transition-all`}
+                  key={order._id}
+                  className={`border-t ${index % 2 === 0 ? "bg-white" : "bg-[#fcfaf8]"} hover:bg-[#fefaf7] transition-all`}
                 >
-                  <td className="py-3 px-4 text-[#4b3f34] font-medium">
-                    {order.id}
-                  </td>
+                  <td className="py-3 px-4 text-[#4b3f34] font-medium">{order.orderId}</td>
                   <td className="py-3 px-4 text-[#4b3f34]">
                     <div className="flex flex-col">
-                      <span>{order.customerName}</span>
+                      <span>{order.userId?.name || "N/A"}</span>
                       <span className="text-sm text-gray-500">
-                        {order.email}
+                        {order.userId?.email || "N/A"}
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-[#4b3f34]">{order.city}</td>
+                  <td className="py-3 px-4 text-[#4b3f34]">{order.userId?.address_details?.[0]
+  ? ` ${order.userId.address_details[0].address}, ${order.userId.address_details[0].city} - ${order.userId.address_details[0].zipCode}`
+  : "N/A"}
+</td>
                   <td className="py-3 px-4 text-gray-700 text-sm">
                     {order.items.map((item, i) => (
                       <div key={i}>
-                        {item.name} × {item.qty}
+                        {item.name} × {item.quantity}
                       </div>
                     ))}
                   </td>
-                  <td className="py-3 px-4 font-semibold text-[#4b3f34]">
-                    ₹{order.totalAmount}
-                  </td>
-                  <td className="py-3 px-4">{getStatusBadge(order.status)}</td>
+                  <td className="py-3 px-4 font-semibold text-[#4b3f34]">₹{order.totalAmt}</td>
+                  <td className="py-3 px-4">{getStatusBadge(order.delivery_Status)}</td>
                   <td className="py-3 px-4 text-gray-600 text-sm">
-                    {new Date(order.orderDate).toLocaleDateString("en-GB", {
+                    {new Date(order.createdAt).toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",

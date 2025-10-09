@@ -37,8 +37,9 @@ payment_status: {
   type: String,
   enum: ["pending", "paid", "failed", ""],
   default: "pending",
-},ery_address:{
-    type : mongoose.Schema.ObjectId ,
+},
+delivery_address:{
+    type :  mongoose.Schema.Types.ObjectId ,
     ref : 'address'
 },
 subTotalAmnt :{
@@ -53,6 +54,11 @@ invoiceReciept :{
     type : String ,
     default : "" ,
 },
+delivery_Status: {
+  type: String,
+enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"], 
+ default: "Pending" // optional: default value
+}
 
  }, {
     timestamps : true,
