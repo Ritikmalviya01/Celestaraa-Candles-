@@ -6,14 +6,18 @@ import { FaUserAlt } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import Search from "../components/Search";
 import { Outlet, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate()
+  const { isAuthenticated, user } = useSelector((state) => state.auth); 
   console.log("Location - ", location);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
-
-  const navItems = ["About", "search-candles", "Contact", "Blogs"];
+const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
+  const navItems = ["About", "Search-candles", "Contact", "Blogs"];
 
   return (
     <header className=" sticky shadow-2xl top-0 py-2.5 px-6 flex justify-center flex-col bg-bg z-50">
@@ -56,7 +60,7 @@ const Header = () => {
             {isDesktopOpen ? <X size={22} /> : <TiThMenu size={22} />}
           </button>
           {isDesktopOpen && (
-            <div className="absolute top-full left-0 w-full text-center z-100 bg-primary/40 shadow-sm hidden lg:block">
+            <div className="absolute top-full left-0 w-full text-center z-100 bg-primary/80 shadow-sm hidden lg:block">
               <div className="flex flex-col px-6 py-4 space-y-4">
                 {navItems.map((item) => (
                   <NavLink
@@ -82,11 +86,62 @@ const Header = () => {
                 <FaCartShopping size={20} />
               </button>
             </Link>
-            <Link to="/user">
+            {/* <Link to="/user">
               <button className="hidden lg:block">
                 <FaUserAlt size={20} />
               </button>
-            </Link>
+            </Link> */}
+            {/* 👤 User Icon */}
+            <div className="relative">
+              <button onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}>
+                <FaUserAlt size={20} />
+              </button>
+
+              {/* User Popup */}
+              {isUserPopupOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg p-4 flex flex-col gap-3 z-50">
+                  {isAuthenticated ? (
+                    <>
+                      <div className="text-sm font-semibold text-gray-700">
+                        {user?.name || "User"}
+                      </div>
+                      <div className="text-xs text-gray-500">{user?.email}</div>
+                      <button
+                        onClick={() => {
+                          navigate("/user");
+                          setIsUserPopupOpen(false);
+                        }}
+                        className="mt-2 bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/80 transition"
+                      >
+                        Dashboard
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          navigate("/login");
+                          setIsUserPopupOpen(false);
+                        }}
+                        className="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/80 transition"
+                      >
+                        Login
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate("/signup");
+                          setIsUserPopupOpen(false);
+                        }}
+                        className="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/80 transition"
+                      >
+                        Signup
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
             <button
               onClick={() => setIsMobileOpen(!isMobileOpen)}
               className="lg:hidden"

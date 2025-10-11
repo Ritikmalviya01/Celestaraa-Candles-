@@ -39,15 +39,15 @@ const ProductCard = ({ eachProduct }) => {
       </div>
 
       <div className="details w-full">
-        <div className="nameAndPrice flex w-full justify-between">
-          <span className="name max-sm:text-2xl max-lg:text-2xl md:text-xl lg:text-2xl xl:text-3xl font-bold tracking-wider">
+        <div className="nameAndPrice flex w-full justify-between gap-4">
+          <span className="name h-16  line-clamp-2 max-sm:text-2xl max-lg:text-2xl md:text-xl lg:text-2xl xl:text-2xl font-bold tracking-wider">
             {eachProduct.name}
           </span>
-          <span className="price flex items-start text-3xl font-semibold tracking-wider">
+          <span className="price flex text-green-600 items-start text-2xl font-semibold tracking-wider">
             Rs.{eachProduct.price}
           </span>
         </div>
-        <div className="desc text-xl tracking-wider h-6 truncate">
+        <div className="desc text-xl line-clamp-2 tracking-wider h-14 ">
           {eachProduct.description}
         </div>
       </div>

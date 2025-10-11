@@ -1,56 +1,67 @@
-import React from "react";
-import cardCandleImage from "../assets/candleCardImage.svg";
-import { IoMdAddCircle } from "react-icons/io";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 import ProductCard from "./ProductCard";
 
-const products = [
-  {
-    name: "Vanilla Relax",
-    price: 20,
-    oldPrice: 24,
-    desc: "Cake Smell",
-    discount: "17%", // ((24-20)/24 * 100)
-  },
-  {
-    name: "Beach Sunshine",
-    price: 40,
-    oldPrice: 44,
-    desc: "Enjoy the afternoon",
-    discount: "9%", // ((44-40)/44 * 100)
-  },
-  {
-    name: "Brown Relac",
-    price: 33,
-    oldPrice: 37,
-    desc: "Together in the afternoon",
-    discount: "11%", // ((37-33)/37 * 100)
-  },
-  {
-    name: "Moon Morning",
-    price: 34,
-    oldPrice: 38,
-    desc: "The scent of the morning",
-    discount: "11%", // ((38-34)/38 * 100)
-  },
-];
-
 const LandingPageCardsSection = () => {
+  const [productDetails, setProductDetails] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user/products",
+          { withCredentials: true }
+        );
+        setProductDetails(response.data?.products || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // ✅ Show only first 4 products
+  const displayedProducts = productDetails.slice(0, 4);
+
   return (
     <div className="px-6 py-12 bg-bg flex flex-col gap-12">
       <div className="heading">
-        <h3 className="text-center text-2xl font-heading  tracking-wider">
+        <h3 className="text-center text-2xl font-heading tracking-wider">
           TRENDING
         </h3>
-        <h2 className="text-center  font-heading font-bold text-4xl tracking-wider">
-          Shop our popular candle products{" "}
+        <h2 className="text-center font-heading font-bold text-4xl tracking-wider">
+          Shop our popular candle products
         </h2>
       </div>
 
-      <div className="cardMain grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-8">
-        {products.map((eachProduct,i) => (
-          <ProductCard key={i} eachProduct={eachProduct} />
-        ))}
+      {/* ✅ Product Cards */}
+      <div className="cardMain grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {displayedProducts.length > 0 ? (
+          displayedProducts.map((eachProduct, i) => (
+            <Link to={`/search-candles/${eachProduct._id}`} key={i}>
+              <ProductCard eachProduct={eachProduct} />
+            </Link>
+          ))
+        ) : (
+          <p className="text-center col-span-full text-gray-500">
+            No products available.
+          </p>
+        )}
       </div>
+
+      {/* ✅ View All Button */}
+      {productDetails.length > 4 && (
+        <div className="text-center">
+          <Link
+            to="/search-candles"
+            className="inline-block bg-primary text-white font-semibold px-6 py-3 rounded-full hover:bg-primary/80 transition duration-300"
+          >
+            View All
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
