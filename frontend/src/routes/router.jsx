@@ -1,6 +1,4 @@
-import {
-  createBrowserRouter,
-} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import App from "../App";
 import Home from "../pages/Home";
@@ -22,11 +20,13 @@ import ViewOrders from "../Modules/admin/pages/ViewOrders";
 import CompletedOrders from "../Modules/admin/pages/CompletedOrders";
 import DeleteBlogs from "../Modules/admin/pages/DeleteBlogs";
 import AddBlogs from "../Modules/admin/pages/AddBlogs";
-import UserSideBar from "../layout/UserSideBar"
+import UserSideBar from "../layout/UserSideBar";
 import UserDashBoard from "../Modules/user/pages/UserDashBoard";
 import ViewPendingOrders from "../Modules/user/pages/ViewPendingOrders";
-
-
+import ProtectedUserRoute from "../ProtectedRoute/ProtectedUserRoute";
+import ProtectedAdminRoute from "../ProtectedRoute/ProtectedAdminRoute ";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
 const router = createBrowserRouter([
   {
     path: "",
@@ -36,7 +36,15 @@ const router = createBrowserRouter([
         path: "",
         element: <Home />,
       },
-{
+       {
+        path: "/about",
+        element: <About />,
+      },
+       {
+        path: "/contact",
+        element: <Contact />,
+      },
+      {
         path: "/search-candles",
         element: <SearchCandlesPage />,
       },
@@ -54,86 +62,58 @@ const router = createBrowserRouter([
       },
       {
         path: "/search-candles/:_id",
-        element: <SingleCandleDetails />
+        element: <SingleCandleDetails />,
       },
-       {
+      {
         path: "/cart",
-        element: <Cart/>
+        element: <Cart />,
       },
       {
-        path: "/Blogs",
-        element: <CandleBlog />
-      }
-,
- {
-        path:"/user",
-        element:<UserSideBar/>,
-        children:[
-          {
-            index:true,
-            element:<UserDashBoard/>
-          },
-        {
-          path:"pending-orders",
-          element:<ViewPendingOrders/>
-        },
-       {
-          path:"completed-orders",
-          element:<CompletedOrders/>
-        }
-      ]
-        }
-,
-      {
-        path:"/admin",
-        element:<AdminSideBar/>,
-        children:[
-          {
-            index:true,
-            element:<DashBoard/>
-          },
-          {
-            path:"add-testimonials",
-            element:<AddTestimonials/>
-          },
-           {
-            path:"view-testimonials",
-            element:<ViewTestimonials/>
-          },
-          {
-            path:"add-products",
-            element:<AddProduct/>
-          },
-           {
-            path:"view-products",
-            element:<ViewProduct/>
-          },
-           {
-            path:"view-users",
-            element:<ViewUsers/>
-          },
-           {
-            path:"view-orders",
-            element:<ViewOrders/>
-          },
-          {
-            path:"completed-orders",
-            element:<CompletedOrders/>
-          },
-          {
-            path:"add-blogs",
-            element:<AddBlogs/>
-          },
-           {
-            path:"delete-blogs",
-            element:<DeleteBlogs/>
-          },
-        ]
-      }
+        path: "/blogs",
+        element: <CandleBlog />,
+      },
 
-    ]
-    }
-]
-)
+      // ✅ PROTECTED USER ROUTES
+      {
+        element: <ProtectedUserRoute />, // wrapper
+        children: [
+          {
+            path: "/user",
+            element: <UserSideBar />,
+            children: [
+              { index: true, element: <UserDashBoard /> },
+              { path: "pending-orders", element: <ViewPendingOrders /> },
+              { path: "completed-orders", element: <CompletedOrders /> },
+            ],
+          },
+        ],
+      },
+
+      // ✅ PROTECTED ADMIN ROUTES
+      {
+        element: <ProtectedAdminRoute />, // wrapper
+        children: [
+          {
+            path: "/admin",
+            element: <AdminSideBar />,
+            children: [
+              { index: true, element: <DashBoard /> },
+              { path: "add-testimonials", element: <AddTestimonials /> },
+              { path: "view-testimonials", element: <ViewTestimonials /> },
+              { path: "add-products", element: <AddProduct /> },
+              { path: "view-products", element: <ViewProduct /> },
+              { path: "view-users", element: <ViewUsers /> },
+              { path: "view-orders", element: <ViewOrders /> },
+              { path: "completed-orders", element: <CompletedOrders /> },
+              { path: "add-blogs", element: <AddBlogs /> },
+              { path: "delete-blogs", element: <DeleteBlogs /> },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+]);
+
 
 export default router;
