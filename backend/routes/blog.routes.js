@@ -1,22 +1,24 @@
-// import express from "express";
-// const blogRouter = express.Router();
-// // import {
-// //   getBlogs,
-// //   createBlog,
-// //   updateBlog,
-// //   deleteBlog,
-// // } from "../../../controller/blog/blog.controller.js";
+import express from "express";
+const blogRouter = express.Router();
 
-// import {
-//   getBlogs,
-//   createBlog,
+
+import {
+getAllBlogs,
+  createBlog,
+  uploadBlogImage,
+  deleteBlog,
+  getBlogById,
 //   updateBlog,
 //   deleteBlog,
-// } from "../controllers/blog.controller.js";
 
-// router.get("/blogs", getBlogs);
-// router.post("/createBlog", createBlog);
+} from "../controllers/blog.controller.js";
+import { auth } from "../middleware/auth.js";
+
+blogRouter.get("/blogs" ,  getAllBlogs);
+blogRouter.get("/blog/:id" ,  getBlogById);
+
+blogRouter.post("/createBlog", auth(["ADMIN"]), uploadBlogImage, createBlog);
 // router.put("/updateBlog/:id", updateBlog);
-// router.delete("/deleteBlog/:id", deleteBlog);
+blogRouter.delete("/deleteBlog/:id",auth(["ADMIN"]), deleteBlog);
 
-// export default blogRouter;
+export default blogRouter;

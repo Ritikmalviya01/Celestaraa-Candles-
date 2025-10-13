@@ -99,8 +99,10 @@ export const createOrder = async (req, res) => {
 
 export const getUserOrders = async (req, res) => {
   try {
-    const { userId } = req.params;
-
+    const  userId  = req.userId;
+ if (!userId) {
+      return res.status(400).json({ success: false, message: "User not authenticated" });
+    }
     const user = await UserModel.findById(userId)
       .populate({
         path: "orderHistory",

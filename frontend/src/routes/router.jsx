@@ -18,7 +18,7 @@ import ViewProduct from "../Modules/admin/pages/ViewProduct";
 import ViewUsers from "../Modules/admin/pages/ViewUsers";
 import ViewOrders from "../Modules/admin/pages/ViewOrders";
 import CompletedOrders from "../Modules/admin/pages/CompletedOrders";
-import DeleteBlogs from "../Modules/admin/pages/DeleteBlogs";
+import DeleteBlogs from "../Modules/admin/pages/ViewBlogs";
 import AddBlogs from "../Modules/admin/pages/AddBlogs";
 import UserSideBar from "../layout/UserSideBar";
 import UserDashBoard from "../Modules/user/pages/UserDashBoard";
@@ -27,6 +27,9 @@ import ProtectedUserRoute from "../ProtectedRoute/ProtectedUserRoute";
 import ProtectedAdminRoute from "../ProtectedRoute/ProtectedAdminRoute ";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
+import CompletedOrdersUsers from "../Modules/user/pages/CompletedOrdersUsers";
+import ViewBlogs from "../Modules/admin/pages/ViewBlogs";
+import ViewSingleBlog from "../pages/ViewSingleBlog";
 const router = createBrowserRouter([
   {
     path: "",
@@ -72,7 +75,10 @@ const router = createBrowserRouter([
         path: "/blogs",
         element: <CandleBlog />,
       },
-
+{
+ path: "/blog/:id",
+        element: <ViewSingleBlog />,
+},
       // ✅ PROTECTED USER ROUTES
       {
         element: <ProtectedUserRoute />, // wrapper
@@ -83,7 +89,7 @@ const router = createBrowserRouter([
             children: [
               { index: true, element: <UserDashBoard /> },
               { path: "pending-orders", element: <ViewPendingOrders /> },
-              { path: "completed-orders", element: <CompletedOrders /> },
+              { path: "completed-orders", element: <CompletedOrdersUsers /> },
             ],
           },
         ],
@@ -106,7 +112,7 @@ const router = createBrowserRouter([
               { path: "view-orders", element: <ViewOrders /> },
               { path: "completed-orders", element: <CompletedOrders /> },
               { path: "add-blogs", element: <AddBlogs /> },
-              { path: "delete-blogs", element: <DeleteBlogs /> },
+              { path: "view-blogs", element: <ViewBlogs /> },
             ],
           },
         ],

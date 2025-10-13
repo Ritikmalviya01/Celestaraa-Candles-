@@ -7,6 +7,8 @@ import * as Yup from "yup";
  import { useDispatch } from "react-redux";
 import { login } from "../redux/slices/authSlice.js"; // adjust path
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,7 +44,7 @@ const handleSubmit = async (values) => {
     const user = response.data.data.user;
 
     if (!user) {
-      alert("User data not received from server");
+      toast.error("No User Found")
       return;
     }
 
@@ -65,7 +67,8 @@ const handleSubmit = async (values) => {
 
   } catch (err) {
     console.error(err);
-    alert(err.response?.data?.message || "Login failed");
+              toast.error(  "Login Failed");
+    
   } finally {
     setIsSubmitting(false);
   }

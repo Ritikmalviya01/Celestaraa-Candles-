@@ -33,7 +33,7 @@ const ProductCard = ({ eachProduct }) => {
       <div className="image w-full">
         <img
           className="w-full h-full object-cover"
-          src={eachProduct.images?.[0] || cardCandleImage} // use actual image if available
+          src={eachProduct?.image?.[0] || cardCandleImage} // use actual image if available
           alt={eachProduct.name}
         />
       </div>

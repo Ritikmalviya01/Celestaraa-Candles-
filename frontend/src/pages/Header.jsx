@@ -8,8 +8,12 @@ import Search from "../components/Search";
 import { Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
+import { logout } from "../redux/slices/authSlice.js"; 
+import { useDispatch } from "react-redux";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate()
   const { isAuthenticated, user } = useSelector((state) => state.auth); 
@@ -18,6 +22,40 @@ const Header = () => {
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
 const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
   const navItems = ["About", "Search-candles", "Contact", "Blogs"];
+
+const Logout = async () => {
+  try {
+    // Start logout request
+    const response = await axios.post(
+      "http://localhost:8000/api/user/logout",
+      {},
+      { withCredentials: true } // Important if using cookie-based sessions
+    );
+
+    if (response.status === 200) {
+      alert("Logout successful");
+      
+      // Optionally clear local auth state if using Redux
+      dispatch(logout());
+
+      // Navigate to homepage after logout
+      navigate("/");
+
+      // Close popup if open
+      setIsUserPopupOpen(false);
+    } else {
+      alert("Logout failed. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+    alert(
+      "Logout error: " +
+        (error.response?.data?.message || error.message || "Unknown error")
+    );
+  }
+};
+
+
 
   return (
     <header className=" sticky shadow-2xl top-0 py-2.5 px-6 flex justify-center flex-col bg-bg z-50">
@@ -115,6 +153,13 @@ const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
                       >
                         Dashboard
                       </button>
+                     <button
+  onClick={Logout}
+  className="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/80 transition"
+>
+  Log Out
+</button>
+
                     </>
                   ) : (
                     <>

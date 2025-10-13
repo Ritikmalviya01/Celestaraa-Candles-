@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { createOrder } from '../controllers/order.controller.js'
+import { createOrder, getUserOrders } from '../controllers/order.controller.js'
 import { addToCart, addUserAddress, forgotPasswordController, getAllProductsForUser, getCart, getProductById, loginController, logoutController, registerUserController, removeCart, updateCart, updateUserDetails } from '../controllers/user.controller.js'
 import { auth } from '../middleware/auth.js'
 // import { forgotPasswordController, loginController, logoutController, registerUserController, updateUserDetails, uploadAvatar, verifyEmailContrpoller } from '../controllers/user.controller.js'
@@ -10,7 +10,7 @@ const userRouter = Router()
 userRouter.post('/register' , registerUserController)
 // userRouter.post('/verify-email', verifyEmailContrpoller)
 userRouter.post('/login', loginController)
-userRouter.get('/logout',auth(["USER"]) , logoutController)
+userRouter.post('/logout', logoutController)
 // userRouter.put('/upload-avatar', auth, upload.single('avatar'), uploadAvatar)
 userRouter.put('/update-user', auth(["USER"]) , updateUserDetails)
 userRouter.put('/forgot-password', forgotPasswordController)
@@ -23,5 +23,5 @@ userRouter.delete("/remove-cart", auth(["USER"])  , removeCart)
 
 userRouter.post("/add-address" ,auth(["USER"]) , addUserAddress )
 userRouter.post("/create-order" , auth(["USER"]), createOrder )
-
+userRouter.get("/get-orders" , auth(["USER"]) , getUserOrders)
 export default userRouter

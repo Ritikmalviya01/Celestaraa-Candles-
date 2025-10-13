@@ -66,7 +66,7 @@ const SingleCandleDetails = () => {
             {/* Image Section */}
             <div className="w-full lg:w-1/2">
               <img
-                src={candleImg}
+                src={product.image?.[0] || candleImg}
                 alt="Vanilla Relax Candle"
                 className="w-full sm:h-[545px] rounded-lg shadow-lg object-cover"
               />

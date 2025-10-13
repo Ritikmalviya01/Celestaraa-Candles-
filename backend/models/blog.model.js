@@ -1,60 +1,32 @@
 import mongoose from "mongoose";
-import User from "../user/user_account.model.js";
 
-const blogSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    numViews: {
-      type: Number,
-      default: 0,
-    },
-    isLiked: {
-      type: Boolean,
-      default: false,
-    },
-    isDisliked: {
-      type: Boolean,
-      default: false,
-    },
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    dislikes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    author: {
-      type: String,
-      default: "Admin",
-    },
-    images: [],
+const blogSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, "Title is required"],
+    trim: true,
+    maxLength: [200, "Title cannot exceed 200 characters"]
   },
-  {
-    toJSON: {
-      virtuals: true,
-    },
-    toObject: {
-      virtuals: true,
-    },
-    timestamps: true,
+  content: {
+    type: String,
+    required: [true, "Content is required"]
+    // This will contain HTML with <h1>, <h2>, <p>, <img> tags from ReactQuill
+  },
+  image: {
+    type: String,
+    required: [true, "Featured image is required"]
+    // This is the main/cover image URL
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
-);
+}, {
+  timestamps: true
+});
 
-const Blog = mongoose.model("Blog", blogSchema);
-export default Blog;
+export default mongoose.model("Blog", blogSchema);
