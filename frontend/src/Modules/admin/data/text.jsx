@@ -59,8 +59,8 @@ export const linksAdmin = [
         path: "/admin/add-blogs",
       },
       {
-        name: "Delete Blog",
-        path: "/admin/delete-blogs",
+        name: "View Blogs",
+        path: "/admin/view-blogs",
       },
     ],
   },

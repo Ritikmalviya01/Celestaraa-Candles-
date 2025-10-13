@@ -290,11 +290,16 @@ const AddProduct = () => {
           }
         }
       });
+      console.log([...formData.entries()]);
 
       const response = await axios.post(
         "http://localhost:8000/api/admin/addProduct",
         formData,
-        { withCredentials: true }
+        { withCredentials: true,
+          headers: {
+          "Content-Type": "multipart/form-data",
+        },
+         }
       );
 
       alert("Product Added Successfully!");
@@ -308,8 +313,9 @@ const AddProduct = () => {
 
   const handleImageUpload = (event, setFieldValue) => {
     const files = Array.from(event.target.files);
-    setPreviewImages((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
-    setFieldValue("image", (prevFiles) => [...(prevFiles || []), ...files]);
+     console.log("Selected files:", files);
+    setPreviewImages(files.map((f) => URL.createObjectURL(f)));
+    setFieldValue("image", files);
   };
 
   return (
@@ -356,13 +362,15 @@ const AddProduct = () => {
             {/* Image Upload */}
             <div>
               <label className="block font-medium">Product Images</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => handleImageUpload(e, setFieldValue)}
-                className="w-full border p-2 rounded"
-              />
+             <input
+  type="file"
+  name="images"             // ✅ must match upload.array("images")
+  accept="image/*"
+  multiple
+  onChange={(e) => handleImageUpload(e, setFieldValue)}
+  className="w-full border p-2 rounded"
+/>
+
               <div className="flex flex-wrap gap-2 mt-3">
                 {previewImages.map((src, index) => (
                   <div key={index} className="w-24 h-24 border rounded overflow-hidden">

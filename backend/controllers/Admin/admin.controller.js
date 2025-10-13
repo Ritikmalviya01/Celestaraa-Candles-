@@ -188,8 +188,7 @@ export const addProduct = async (req, res) => {
   try {
     const {
       name,
-      category,
-      subCategory,
+      
       unit,
       stock,
       price,
@@ -199,7 +198,7 @@ export const addProduct = async (req, res) => {
       publish,
     } = req.body;
 
-    if (!name || !price || !category || category.length === 0) {
+    if (!name || !price ) {
       return res.status(400).json({
         success: false,
         message: "Name, price, and at least one category are required",
@@ -237,8 +236,8 @@ export const addProduct = async (req, res) => {
     const product = new ProductModel({
       name,
       image: imageUrls,
-      category,
-      subCategory: subCategory || [],
+      
+     
       unit: unit || "",
       stock: stock || 0,
       price,

@@ -5,15 +5,19 @@ cloudinary.config({
     api_secret : process.env.CLOUDINARY_API_SECRET_KEY
 })
 const uploadImageCloudinary = async(image) => {
-    const buffer= image?.buffer ||  Buffer.from(await image.arrayBuffer())
+  const buffer = image?.buffer || Buffer.from(await image.arrayBuffer());
 
-    const uploadImage = await new Promise((resolve, reject) => {
-cloudinary.uploader.upload_stream({ folder : "Celestaraa-Candles"}, (error, uploadResult) => {
-    return resolve(uploadResult)
-}).end(buffer)
-    })
-    return uploadImage
-}
+  const uploadImage = await new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream({ folder: "Celestaraa-Candles" }, (error, uploadResult) => {
+      if (error) {
+        console.error("Cloudinary upload error:", error);
+        return reject(error);
+      }
+      resolve(uploadResult);
+    }).end(buffer);
+  });
+  return uploadImage;
+};
 
 
 export default uploadImageCloudinary
