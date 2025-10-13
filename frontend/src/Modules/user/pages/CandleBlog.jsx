@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import BASE_URL from '../../../utils/Base_url';
 
 export default function CandleBlog() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function CandleBlog() {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('http://localhost:8000/api/blog/blogs', {
+      const response = await axios.get(`${BASE_URL}/blog/blogs`, {
         withCredentials: true
       });
 

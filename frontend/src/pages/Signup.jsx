@@ -5,6 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import toast from "react-hot-toast";
+import BASE_URL from "../utils/Base_url";
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -54,7 +55,7 @@ const Signup = () => {
           onSubmit={async (values, { setSubmitting, resetForm }) => {
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/user/register",
+      `${BASE_URL}/user/register`,
       {
         name: values.name,
         email: values.email,

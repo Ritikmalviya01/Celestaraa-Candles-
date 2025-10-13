@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import toast from "react-hot-toast";
+import BASE_URL from "../../../utils/Base_url"
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -24,7 +25,7 @@ const TestimonialForm = () => {
       formData.append("photo", values.photo);
 
       const response = await axios.post(
-        "http://localhost:8000/api/admin/add-testimonial",
+        `${BASE_URL}/admin/add-testimonial`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

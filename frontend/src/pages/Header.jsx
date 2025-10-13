@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { logout } from "../redux/slices/authSlice.js"; 
 import { useDispatch } from "react-redux";
+import BASE_URL from "../utils/Base_url.js";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -21,13 +22,13 @@ const Header = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
 const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
-  const navItems = ["About", "Search-candles", "Contact", "Blogs"];
+  const navItems = ["About", "Search-candles","Help", "Contact", "Blogs"];
 
 const Logout = async () => {
   try {
     // Start logout request
     const response = await axios.post(
-      "http://localhost:8000/api/user/logout",
+      `${BASE_URL}/user/logout`,
       {},
       { withCredentials: true } // Important if using cookie-based sessions
     );
@@ -88,9 +89,7 @@ const Logout = async () => {
               <FaCartShopping size={20} />
             </button>
           </Link>
-          <button className="lg:hidden">
-            <FaUserAlt size={20} />
-          </button>
+       
           <button
             onClick={() => setIsDesktopOpen(!isDesktopOpen)}
             className="hidden lg:block"

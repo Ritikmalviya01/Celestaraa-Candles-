@@ -2,6 +2,7 @@ import React from "react";
 import cardCandleImage from "../assets/candleCardImage.svg";
 import { IoMdAddCircle } from "react-icons/io";
 import axios from "axios";
+import BASE_URL from "../utils/Base_url";
 
 const ProductCard = ({ eachProduct }) => {
 
@@ -9,7 +10,7 @@ const ProductCard = ({ eachProduct }) => {
     try {
       // call backend API
       const res = await axios.post(
-        "http://localhost:8000/api/user/add-to-cart",
+        `${BASE_URL}/user/add-to-cart`,
         {
           productId: eachProduct._id,  
           quantity: 1,                 

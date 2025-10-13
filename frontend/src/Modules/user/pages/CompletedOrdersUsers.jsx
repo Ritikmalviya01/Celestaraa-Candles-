@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CheckCircle, Package, IndianRupee, AlertCircle, X, ShoppingBag } from "lucide-react";
 import image from "../../../assets/candleCardImage.svg";
 import axios from "axios";
+import BASE_URL from "../../../utils/Base_url";
 
 const CompletedOrdersUsers = () => {
   const [completedOrders, setCompletedOrders] = useState([]);
@@ -17,7 +18,7 @@ const CompletedOrdersUsers = () => {
     try {
       setLoading(true);
 
-      const response = await axios.get("http://localhost:8000/api/user/get-orders", {
+      const response = await axios.get(`${BASE_URL}/user/get-orders`, {
         withCredentials: true,
       });
 

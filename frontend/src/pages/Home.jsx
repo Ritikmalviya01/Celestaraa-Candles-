@@ -14,6 +14,7 @@ const Home = () => {
       <OurStory />
       <TestimonialCarousel />
     
+    
     </div>
   );
 };

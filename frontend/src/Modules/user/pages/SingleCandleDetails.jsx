@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import ProductCard from "../../../components/ProductCard";
+import BASE_URL from "../../../utils/Base_url";
 const SingleCandleDetails = () => {
   const { _id } = useParams();
   const [quantity, setQuantity] = useState(1);
@@ -19,7 +20,7 @@ const SingleCandleDetails = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/user/products",
+          `${BASE_URL}/user/products`,
           { withCredentials: true }
         );
         setProductDetails(response.data?.products);
@@ -36,7 +37,7 @@ const SingleCandleDetails = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/user/singleProduct/${_id}`,
+          `${BASE_URL}/user/singleProduct/${_id}`,
           { withCredentials: true } // optional if your backend uses cookies
         );
         setProduct(response.data?.product);

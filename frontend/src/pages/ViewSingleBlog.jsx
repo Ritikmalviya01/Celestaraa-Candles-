@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Loader2, AlertCircle, Eye } from 'lucide-react';
 import axios from 'axios';
-
+import BASE_URL from '../utils/Base_url';
 const ViewSingleBlog = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const ViewSingleBlog = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`http://localhost:8000/api/blog/blog/${id}`, {
+      const response = await axios.get(`${BASE_URL}/blog/blog/${id}`, {
         withCredentials: true
       });
 

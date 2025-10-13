@@ -9,7 +9,7 @@ import { login } from "../redux/slices/authSlice.js"; // adjust path
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import BASE_URL from "../utils/Base_url.js";
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +35,7 @@ const handleSubmit = async (values) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/user/login",
+      `${BASE_URL}/user/login`,
       values,
       { withCredentials: true } // send cookies if using JWT
     );

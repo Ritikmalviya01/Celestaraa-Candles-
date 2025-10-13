@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Eye, Loader2, AlertCircle, Calendar, FileText, Search, RefreshCw } from 'lucide-react';
 import axios from 'axios';
+import BASE_URL from "../../../utils/Base_url"
 
 const ViewBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -32,7 +33,7 @@ const ViewBlogs = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('http://localhost:8000/api/blog/blogs', {
+      const response = await axios.get(`${BASE_URL}/blog/blogs`, {
         withCredentials: true
       });
       
@@ -57,7 +58,7 @@ const ViewBlogs = () => {
 
     try {
       setDeleteLoading(blogId);
-      const response = await axios.delete(`http://localhost:8000/api/blog/deleteBlog/${blogId}`, {
+      const response = await axios.delete(`${BASE_URL}/blog/deleteBlog/${blogId}`, {
         withCredentials: true
       });
 

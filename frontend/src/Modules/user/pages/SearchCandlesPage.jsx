@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
 import ProductCard from "../../../components/ProductCard";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaFilter } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { SearchQuery } from "../../../components/Context";
-import axios from "axios"
-import {Link} from "react-router-dom"
+import axios from "axios";
+import BASE_URL from "../../../utils/Base_url";
+import { Link } from "react-router-dom";
 
-
+// 🧩 Filter Section
 const FilterSection = ({ title, options, selected, onChange }) => {
   const [open, setOpen] = useState(true);
 
-  // Special handling for price (numeric input)
+  // Special handling for Price range
   if (title === "Price") {
     const [min, max] = selected;
-
     return (
       <div className="border-b border-gray-200 py-4">
         <button
@@ -22,7 +23,6 @@ const FilterSection = ({ title, options, selected, onChange }) => {
           {title}
           {open ? <FaChevronUp /> : <FaChevronDown />}
         </button>
-
         {open && (
           <div className="mt-3 flex gap-2">
             <input
@@ -55,7 +55,7 @@ const FilterSection = ({ title, options, selected, onChange }) => {
     );
   }
 
-  // Default for checkbox filters
+  // Checkbox filters
   return (
     <div className="border-b border-gray-200 py-4">
       <button
@@ -65,7 +65,6 @@ const FilterSection = ({ title, options, selected, onChange }) => {
         {title}
         {open ? <FaChevronUp /> : <FaChevronDown />}
       </button>
-
       {open && (
         <div className="mt-3 flex flex-col gap-2">
           {options.map((opt, i) => (
@@ -82,7 +81,7 @@ const FilterSection = ({ title, options, selected, onChange }) => {
                   }
                   onChange(title, updated);
                 }}
-                className="w-4 h-4 accent-[#C9A489] cursor-pointer"
+                className="w-4 h-4 accent-primary cursor-pointer"
               />
               <span className="text-sm tracking-wide">{opt}</span>
             </label>
@@ -93,28 +92,27 @@ const FilterSection = ({ title, options, selected, onChange }) => {
   );
 };
 
+// 🕯 Main Page
 const SearchCandlesPage = () => {
-  const [ productDetails , setProductDetails] = useState([])
+  const [productDetails, setProductDetails] = useState([]);
+  const value = useContext(SearchQuery);
+  const [isFilterOpen, setIsFilterOpen] = useState(false); // mobile drawer state
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/user/products",
-          {withCredentials: true,}
-         );
-        setProductDetails(response.data?.products); 
-        console.log(response.data)// use response.data
+        const response = await axios.get(`${BASE_URL}/user/products`, {
+          withCredentials: true,
+        });
+        setProductDetails(response.data?.products);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
+    fetchProducts();
+  }, []);
 
-    fetchProducts(); // call the async function
-  }, []); 
-  const value = useContext(SearchQuery);
-
-  
-
-  // filter state
+  // Filters state
   const [filters, setFilters] = useState({
     "Aroma Level": [],
     "Aroma Type": [],
@@ -129,15 +127,13 @@ const SearchCandlesPage = () => {
     Price: [null, null],
   });
 
-  // handle filter change
   const handleFilterChange = (title, selected) => {
     setFilters((prev) => ({ ...prev, [title]: selected }));
   };
 
-  // apply filters + search term
+  // Apply filters + search
   const filteredProducts = productDetails.filter((p) => {
     const [minPrice, maxPrice] = filters["Price"];
-
     if (minPrice !== null && p.price < minPrice) return false;
     if (maxPrice !== null && p.price > maxPrice) return false;
 
@@ -177,17 +173,24 @@ const SearchCandlesPage = () => {
     )
       return false;
 
-    if (filters["Color"].length > 0 && !filters["Color"].includes(p.more_details?.color))
+    if (
+      filters["Color"].length > 0 &&
+      !filters["Color"].includes(p.more_details?.color)
+    )
       return false;
 
     if (
       filters["Eco-Friendly"].length > 0 &&
-      !filters["Eco-Friendly"].every((f) => p.more_details?.ecoFriendly.includes(f))
+      !filters["Eco-Friendly"].every((f) =>
+        p.more_details?.ecoFriendly?.includes(f)
+      )
     )
       return false;
 
-    if (filters["Rating"].includes("4★ & up") && p.more_details?.rating < 4) return false;
-    if (filters["Rating"].includes("3★ & up") && p.more_details?.rating < 3) return false;
+    if (filters["Rating"].includes("4★ & up") && p.more_details?.rating < 4)
+      return false;
+    if (filters["Rating"].includes("3★ & up") && p.more_details?.rating < 3)
+      return false;
 
     if (
       filters["Occasion"].length > 0 &&
@@ -195,57 +198,47 @@ const SearchCandlesPage = () => {
     )
       return false;
 
-    // 🔍 search term filter
     if (value.SearchTerm) {
-      const searchLower = value.SearchTerm.toLowerCase();
+      const s = value.SearchTerm.toLowerCase();
       if (
-        !p.name.toLowerCase().includes(searchLower) &&
-        !p.description.toLowerCase().includes(searchLower)
-      ) {
+        !p.name.toLowerCase().includes(s) &&
+        !p.description.toLowerCase().includes(s)
+      )
         return false;
-      }
     }
-
     return true;
   });
 
   const filterConfigs = [
     { title: "Aroma Level", options: ["Soft", "Medium", "Strong"] },
-    {
-      title: "Aroma Type",
-      options: ["Fruits", "Floral", "Nature", "Woody", "Spices", "Parfum"],
-    },
+    { title: "Aroma Type", options: ["Fruits", "Floral", "Nature", "Woody", "Spices", "Parfum"] },
     { title: "Product Size", options: ["Small", "Medium", "Large"] },
     { title: "Burn Time", options: ["< 20 hrs", "20–40 hrs", "40+ hrs"] },
-    {
-      title: "Wax Type",
-      options: ["Soy", "Beeswax", "Paraffin", "Coconut", "Blend"],
-    },
-    {
-      title: "Wick Type",
-      options: ["Single Wick", "Multi Wick", "Wooden Wick"],
-    },
+    { title: "Wax Type", options: ["Soy", "Beeswax", "Paraffin", "Coconut", "Blend"] },
+    { title: "Wick Type", options: ["Single Wick", "Multi Wick", "Wooden Wick"] },
     { title: "Price", options: [] },
-    {
-      title: "Color",
-      options: ["White", "Black", "Red", "Pink", "Green", "Orange"],
-    },
+    { title: "Color", options: ["White", "Black", "Red", "Pink", "Green", "Orange"] },
     { title: "Eco-Friendly", options: ["Vegan", "Cruelty-Free", "Handmade"] },
     { title: "Rating", options: ["4★ & up", "3★ & up"] },
-    {
-      title: "Occasion",
-      options: ["Gift Sets", "Holiday", "Romantic", "Relaxation", "Luxury"],
-    },
+    { title: "Occasion", options: ["Gift Sets", "Holiday", "Romantic", "Relaxation", "Luxury"] },
   ];
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-bg">
-      <div className="upper">{/* <Search /> */}</div>
-
-      <div className="main flex gap-6 relative">
-        <aside className="sm:w-1/4 w-1/2 bg-[#FDF8F4] p-5 sticky top-0 rounded-lg border border-[#E5E1DC] font-heading">
+    <div className="relative flex flex-col gap-6 p-4 bg-bg ">
+      {/* 🔘 Mobile Filter Toggle */}
+    { !isFilterOpen&& <div className="lg:hidden flex fixed z-50  right-1 justify-end">
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="bg-primary text-white px-4 py-2 rounded-full font-semibold flex items-center gap-2"
+        >
+          <FaFilter /> Filters
+        </button>
+      </div>
+}
+      <div className="main flex gap-6">
+        {/* 🧾 Sidebar (desktop) */}
+        <aside className="hidden lg:block lg:w-1/4 bg-white p-5 rounded-lg border border-gray-200 font-heading shadow-sm h-fit sticky top-4">
           <h2 className="text-xl font-bold mb-4">Filters</h2>
-
           {filterConfigs.map((filter) => (
             <FilterSection
               key={filter.title}
@@ -256,18 +249,55 @@ const SearchCandlesPage = () => {
             />
           ))}
         </aside>
-        <div className="cardMainRight h-[77vh] overflow-y-scroll w-3/4 grid  gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
+
+        {/* 🕯 Products Grid */}
+        <div className="w-full lg:w-3/4 grid gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
           {filteredProducts.length === 0 ? (
-            <div>No Candles Found</div>
+            <div className="col-span-full text-center text-gray-500">
+              No Candles Found
+            </div>
           ) : (
             filteredProducts.map((eachProduct, i) => (
               <Link to={`/search-candles/${eachProduct._id}`} key={i}>
-               <ProductCard key={i} eachProduct={eachProduct} /></Link>
+                <ProductCard eachProduct={eachProduct} />
+              </Link>
             ))
           )}
         </div>
-        </div>
       </div>
+
+      {/* 📱 Mobile Filter Drawer */}
+      {isFilterOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            onClick={() => setIsFilterOpen(false)}
+          ></div>
+
+          <div className="fixed top-0 left-0 h-full w-4/5 max-w-xs bg-white z-50 shadow-lg transform transition-transform duration-300 ease-in-out">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-xl font-bold">Filters</h2>
+              <IoMdClose
+                size={24}
+                className="cursor-pointer text-gray-600"
+                onClick={() => setIsFilterOpen(false)}
+              />
+            </div>
+            <div className="overflow-y-auto p-5 h-full pb-24">
+              {filterConfigs.map((filter) => (
+                <FilterSection
+                  key={filter.title}
+                  title={filter.title}
+                  options={filter.options}
+                  selected={filters[filter.title]}
+                  onChange={handleFilterChange}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 

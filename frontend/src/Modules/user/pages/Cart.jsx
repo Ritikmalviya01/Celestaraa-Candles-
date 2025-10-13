@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import BASE_URL from '../../../utils/Base_url';
 
 
 const loadRazorpay = () =>
@@ -43,7 +43,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/user/get-cart", {
+        const res = await axios.get(`${BASE_URL}/api/user/get-cart`, {
           withCredentials: true,
         });
         if (res.data.success) {
@@ -61,7 +61,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/user/add-address", {
+        const res = await axios.get(`${BASE_URL}/user/add-address`, {
           withCredentials: true,
         });
         if (res.data.success && res.data.address) {
@@ -80,7 +80,7 @@ const Cart = () => {
       // When clicking "Save"
       try {
         const res = await axios.post(
-          "http://localhost:8000/api/user/add-address",
+          `${BASE_URL}/user/add-address`,
           {
             name: tempContactInfo.name,
             phone: tempContactInfo.phone,
@@ -116,7 +116,7 @@ toast.error("Something went wrong while saving the address");
   const removeItem = async (cartItemId) => {
     try {
       const res = await axios.delete(
-        "http://localhost:8000/api/user/remove-cart",
+        `${BASE_URL}/user/remove-cart`,
         {
           withCredentials: true,
           data: { cartItemId }
@@ -140,7 +140,7 @@ toast.error("Failed to remove item from cart. Try again.");    }
 
     try {
       const res = await axios.put(
-        "http://localhost:8000/api/user/update-cart",
+        `${BASE_URL}/user/update-cart`,
         { cartItemId, quantity: newQuantity },
         { withCredentials: true }
       );
@@ -222,7 +222,7 @@ toast.warning("Please complete all contact information fields!");
 
     try {
       const orderRes = await axios.post(
-        "http://localhost:8000/api/user/create-order",
+        `${BASE_URL}/user/create-order`,
         {
           items: cart.map((i) => ({
             productId: i.product._id,

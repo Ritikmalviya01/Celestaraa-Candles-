@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"
-
+import BASE_URL from "../../../utils/Base_url"
 // Dummy data for now (replace with API/Context data later)
 const dummyTestimonials = [
   {
@@ -47,7 +47,7 @@ const ViewTestimonials = () => {
     const fetchTestimonials = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/admin/list-testimonials",
+          `${BASE_URL}/admin/list-testimonials`,
           { withCredentials: true } // keep only if route is protected
         );
 
