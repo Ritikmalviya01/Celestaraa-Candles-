@@ -3,12 +3,12 @@ import { LuLayoutDashboard } from "react-icons/lu";
 // import userImge from "../../../assets/usertestimonials.png";
 // import Icons from "../../../common/Icons";
 export const linksUser = [
-  {
-    type: "link",
-    name: "Dashboard",
-    icon: <LuLayoutDashboard size={22} />,
-    path: "/user",
-  },
+  // {
+  //   type: "link",
+  //   name: "Dashboard",
+  //   icon: <LuLayoutDashboard size={22} />,
+  //   path: "/user",
+  // },
   {
     type: "link",
     name: "Pending Orders",

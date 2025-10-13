@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Loader2, Package } from "lucide-react";
 import axios from "axios";
+import BASE_URL from "../../../utils/Base_url"
 
 const ViewOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,7 +12,7 @@ const ViewOrders = () => {
     const fetchOrders = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/admin/get-orders", // your backend API
+          `${BASE_URL}/admin/get-orders`, // your backend API
           { withCredentials: true }
         );
 

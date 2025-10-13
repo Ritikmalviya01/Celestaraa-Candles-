@@ -26,6 +26,7 @@ import ViewPendingOrders from "../Modules/user/pages/ViewPendingOrders";
 import ProtectedUserRoute from "../ProtectedRoute/ProtectedUserRoute";
 import ProtectedAdminRoute from "../ProtectedRoute/ProtectedAdminRoute ";
 import About from "../pages/About";
+import Help from "../pages/Help"
 import Contact from "../pages/Contact";
 import CompletedOrdersUsers from "../Modules/user/pages/CompletedOrdersUsers";
 import ViewBlogs from "../Modules/admin/pages/ViewBlogs";
@@ -42,6 +43,9 @@ const router = createBrowserRouter([
        {
         path: "/about",
         element: <About />,
+      },
+      {path:"/help",
+        element:<Help/>
       },
        {
         path: "/contact",

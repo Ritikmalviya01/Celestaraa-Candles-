@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ProductCard from "./ProductCard";
+import BASE_URL from "../utils/Base_url";
 
 const LandingPageCardsSection = () => {
   const [productDetails, setProductDetails] = useState([]);
@@ -10,7 +11,7 @@ const LandingPageCardsSection = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/user/products",
+          `${BASE_URL}/user/products`,
           { withCredentials: true }
         );
         setProductDetails(response.data?.products || []);

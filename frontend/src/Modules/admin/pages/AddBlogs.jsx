@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import axios from "axios";
+import BASE_URL from "../../../utils/Base_url";
 
 const AddBlogs = () => {
   const [title, setTitle] = useState("");
@@ -61,7 +62,7 @@ const AddBlogs = () => {
 
       // API call to backend
       const response = await axios.post(
-        "http://localhost:8000/api/blog/createBlog",
+        `${BASE_URL}/blog/createBlog`,
         formData,
         {
           headers: { 

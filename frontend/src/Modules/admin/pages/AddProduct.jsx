@@ -240,6 +240,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { filterConfigs } from "../components/filterConfigs";
+import BASE_URL from "../../../utils/Base_url"
 
 const AddProduct = () => {
   const [previewImages, setPreviewImages] = useState([]);
@@ -293,7 +294,7 @@ const AddProduct = () => {
       console.log([...formData.entries()]);
 
       const response = await axios.post(
-        "http://localhost:8000/api/admin/addProduct",
+        `${BASE_URL}/admin/addProduct`,
         formData,
         { withCredentials: true,
           headers: {

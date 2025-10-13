@@ -4,7 +4,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import axios from "axios" 
 import ProductCard from "../../../components/ProductCard";
 import AdminProductCad from "../components/AdminProductCad";
-
+import BASE_URL from "../../../utils/Base_url";
 
 
 const ViewProduct = () => {
@@ -15,7 +15,7 @@ const handleDelete = async (productId) => {
 
     try {
       const res = await axios.delete(
-        `http://localhost:8000/api/admin/delete-product`,
+        `${BASE_URL}/admin/delete-product`,
         { 
           data: { productId },
           withCredentials: true }
@@ -35,7 +35,7 @@ const handleDelete = async (productId) => {
 useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/admin/listed-products",
+        const response = await axios.get(`${BASE_URL}/admin/listed-products`,
           {withCredentials: true,}
          );
         setProductDetails(response.data?.products); 
