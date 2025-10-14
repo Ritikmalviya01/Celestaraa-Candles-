@@ -6,6 +6,7 @@ import greenLeaf from "../assets/footerImages/greenLeaf.png";
 import redLeaf from "../assets/footerImages/redLeaf.png";
 import centerGreenLeaf from "../assets/footerImages/centerGreenLeaf.png";
 import endingImage from "../assets/footerImages/endingImage2.png";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const socialMediaIcons = [FaFacebookF, FaInstagram, FaYoutube, FaXTwitter];
@@ -14,25 +15,29 @@ const Footer = () => {
     <div className="bg-[var(--footer-skin-color-bg)] w-full h-fit">
       <div className="bg-[var(--color-primary)] relative w-full h-screen max-h-[600px]   flex flex-col justify-center items-center sm:rounded-t-[50%]">
         <div className="absolute max-sm:size-16 max-lg:size-28 max-xl:size-44  max-sm:top-0 left-0">
-          <img src={greenLeaf} alt="" />
+          <img src={greenLeaf} alt="Green decorative leaf" />
         </div>
         <div className="absolute max-sm:size-16 max-lg:size-28 max-xl:size-44 max-sm:top-0 right-0">
-          <img src={redLeaf} alt="" />
+          <img src={redLeaf} alt="Red decorative leaf" />
         </div>
         <div className="content max-sm:w-10/12 w-8/12 md:w-7/12 lg:w-5/12 xl:w-5/12  flex flex-col items-center gap-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl  text-center font-heading font-extrabold text-[var(--footer-skin-color-bg)] ">
-            Craft workshop team building
+             Illuminate Your Inbox.
           </h1>
           <p className="font-text max-sm:text-xs text-amber-50 text-center text-sm">
-            Ignite teamwork and creativity with CERA's craft workshops.
-            Collaborate, create, and bond as you craft personalized rugs and
-            ceramics. Take home mementos of shared moments and lasting teamwork.
-            Unleash creativity together at CERA.
+            Join a community that celebrates light, luxury, and warmth. Subscribe to receive
+             exclusive glimpses of upcoming collections, deep-dive features on the craft of
+              candle making, and private invitations to special events. Your moments of serenity,
+               delivered.
+
           </p>
 
+         <Link to="/contact">
+         
           <button className=" bg-amber-100 flex items-center justify-center px-4 py-2 w-fit font-heading font-bold ">
-            Join Our Community <GoArrowRight />{" "}
+         Illuminate Your Inbox    <GoArrowRight />{" "}
           </button>
+         </Link>
         </div>
 
         <div className="absolute  w-full h-full flex flex-col items-center justify-center   top-11/12">
@@ -44,8 +49,12 @@ const Footer = () => {
                 team to accelerate our growth.
               </p>
               <div className="inputAndBtn flex gap-4 w-full">
-                <input type="text" className="lg:px-3 lg:py-2  px-2 py-1 w-7/12 bg-white" />
-                <button className="lg:px-3 lg:py-2 px-2 py-1 lg:text-base text-xs w-fit text-white bg-[var(--color-primary)]">
+<input 
+  type="text" 
+  name="newsletterEmail" 
+  aria-label="Enter your email for newsletter"
+  className="lg:px-3 lg:py-2 px-2 py-1 w-7/12 bg-white" 
+/>                <button className="lg:px-3 lg:py-2 px-2 py-1 lg:text-base text-xs w-fit text-white bg-[var(--color-primary)]">
                   Subscribe
                 </button>
               </div>
@@ -57,7 +66,7 @@ const Footer = () => {
             </div>
 
             <div className="centerGreenLea absolute top-0 z-0 left-0 w-full h-full flex justify-center ">
-              <img src={centerGreenLeaf} alt="" />
+              <img src={centerGreenLeaf} alt="Center decorative leaf" />
             </div>
           </div>
           <div className="w-11/12 bg-white flex sm:flex-row flex-col gap-6 sm:gap-0 sm:justify-between py-8 ">
@@ -77,7 +86,9 @@ const Footer = () => {
               </p>
               <ul className="flex gap-4">
                 {socialMediaIcons.map((IconName,i) => (
-                  <li key={i} className="bg-[var(--color-primary)] p-2 rounded-full"> <IconName className="text-white size-6"/> </li>
+                  <li key={i} className="bg-[var(--color-primary)] p-2 rounded-full"> 
+                  <a href="#" aria-label={`Follow us on ${IconName.name}`}></a>
+                  <IconName className="text-white size-6"/> </li>
                 ))}
               </ul>
             </div>
@@ -87,7 +98,7 @@ const Footer = () => {
             <img
               className="w-full h-36 object-cover"
               src={endingImage}
-              alt=""
+              alt="Artistic ending image of Celestaraa"
             />
           </div>
         </div>
