@@ -1,47 +1,29 @@
 import React, { useState, useEffect } from "react";
 import arrow from "../assets/arrowTestimonial.png";
+import axios from "axios";
+import BASE_URL from "../utils/Base_url";
+import { useSelector } from "react-redux";
 
 const TestimonialCarousel = () => {
-  const testimonials = [
-    {
-      id: 1,
-      text: "Working with this team was a pleasure! They understood our vision perfectly and delivered beyond expectations.",
-      name: "Ritesh",
-      title: "Creative Director",
-      location: "New York",
-      avatar:
-         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-    },
-    {
-      id: 2,
-      text: "Their professionalism and commitment to quality stood out. The project came out beautifully and on time!",
-      name: "Rohan",
-      title: "Product Manager",
-      location: "San Francisco",
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-    },
-    {
-      id: 3,
-      text: "They turned our ideas into a stunning digital experience. Highly recommend for creative and reliable work.",
-      name: "Ritik",
-      title: "UX Designer",
-      location: "Delhi",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-    },
-    {
-      id: 4,
-      text: "Outstanding service and excellent communication throughout. I look forward to collaborating again!",
-      name: "Rupesh",
-      title: "Frontend Developer",
-      location: "Seattle",
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
-    },
-  ];
+ 
+  const [testimonials, setTestimonials] = useState([])
 
+  const { token } = useSelector((state) => state.auth);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const getTestimonials = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/admin/list-testimonials`, {
+        headers: { Authorization: `Bearer: ${token}` },
+      });
+      console.log("Testimonials == ", res.data.data);
+      setTestimonials(res.data.data)
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getTestimonials();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -69,7 +51,7 @@ const TestimonialCarousel = () => {
         >
           {testimonials.map((t) => (
             <div
-              key={t.id}
+              key={t._id}
               className="w-full flex-shrink-0 flex flex-col md:flex-row items-center md:items-center justify-center text-center md:text-left px-6 sm:px-10"
             >
               <div className="bg-white shadow-lg hover:shadow-2xl transition-all duration-700 rounded-3xl border border-gray-100 p-6 sm:p-14 flex flex-col md:flex-row items-center md:space-x-10 space-y-8 md:space-y-0 max-w-5xl mx-auto relative">
@@ -79,7 +61,7 @@ const TestimonialCarousel = () => {
                 {/* Avatar */}
                 <div className="flex-shrink-0 flex justify-center md:justify-start relative z-10">
                   <img
-                    src={t.avatar}
+                    src={t.image?t.image : "snsn"}
                     alt={t.name}
                     className="w-32 h-32 sm:w-44 sm:h-44 rounded-full border-4 border-primary shadow-md object-cover transform hover:scale-105 transition-transform duration-500"
                   />
@@ -109,7 +91,7 @@ const TestimonialCarousel = () => {
 
                   {/* Description */}
                   <p className="mt-6 text-lg md:text-xl text-gray-700 leading-relaxed italic">
-                    “{t.text}”
+                    “{t.description}”
                   </p>
 
                   {/* Divider Arrow */}

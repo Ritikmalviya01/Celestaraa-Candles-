@@ -3,7 +3,8 @@ import { CheckCircle, Package, IndianRupee, AlertCircle, X, ShoppingBag } from "
 import image from "../../../assets/candleCardImage.svg";
 import axios from "axios";
 import BASE_URL from "../../../utils/Base_url";
-
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 const CompletedOrdersUsers = () => {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,8 +79,14 @@ const CompletedOrdersUsers = () => {
     );
   }
 
-  return (
+  return ( 
     <>
+     <div className="flex  lg:hidden w-full justify-between bg-white  sticky top-[100px]">
+        {" "}
+        <Link className={` ${location.pathname.includes("/pending-orders")?"bg-primary text-white":"bg-white text-primary"} font-semibold w-1/2 h-full px-4 py-3  text-center`} to={"/user/pending-orders"}>Pending</Link>
+        <div className="bg-primary w-[1px] h-full"></div>
+        <Link className={ `${location.pathname.includes("/completed-orders")?"bg-primary text-white":"bg-white text-primary"} font-semibold w-1/2 h-full px-4 py-3  text-center`} to={"/user/completed-orders"}>Completed</Link>
+      </div>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}

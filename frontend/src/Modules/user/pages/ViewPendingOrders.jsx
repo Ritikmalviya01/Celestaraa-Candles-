@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Clock, Package, IndianRupee, AlertCircle, X, ShoppingBag } from "lucide-react";
+import {
+  Clock,
+  Package,
+  IndianRupee,
+  AlertCircle,
+  X,
+  ShoppingBag,
+} from "lucide-react";
 import image from "../../../assets/candleCardImage.svg";
 import axios from "axios";
 import BASE_URL from "../../../utils/Base_url";
+import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 const ViewPendingOrders = () => {
   const [pendingOrders, setPendingOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
-
+  const location = useLocation();
   useEffect(() => {
     fetchPendingOrders();
   }, []);
@@ -22,7 +31,7 @@ const ViewPendingOrders = () => {
       });
 
       const data = response.data;
- console.log(response.data)
+      console.log(response.data);
       if (data.success) {
         const pending = data.orders.filter(
           (order) => order.delivery_Status === "Pending"
@@ -64,7 +73,10 @@ const ViewPendingOrders = () => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 sm:p-6 shadow-sm">
             <div className="flex items-start gap-3">
-              <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
+              <AlertCircle
+                className="text-red-500 flex-shrink-0 mt-0.5"
+                size={20}
+              />
               <div>
                 <h3 className="text-red-800 font-semibold mb-1">Error</h3>
                 <p className="text-red-700 text-sm sm:text-base">{error}</p>
@@ -78,6 +90,31 @@ const ViewPendingOrders = () => {
 
   return (
     <>
+      {" "}
+      <div className="flex lg:hidden w-full justify-between bg-white  sticky top-[100px]">
+        {" "}
+        <Link
+          className={` ${
+            location.pathname.includes("/pending-orders")
+              ? "bg-primary text-white"
+              : "bg-white text-primary"
+          } font-semibold w-1/2 h-full px-4 py-3  text-center`}
+          to={"/user/pending-orders"}
+        >
+          Pending
+        </Link>
+        <div className="bg-primary w-[1px] h-full"></div>
+        <Link
+          className={`${
+            location.pathname.includes("/completed-orders")
+              ? "bg-primary text-white"
+              : "bg-white text-primary"
+          } font-semibold w-1/2 h-full px-4 py-3  text-center`}
+          to={"/user/completed-orders"}
+        >
+          Completed
+        </Link>
+      </div>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -86,7 +123,8 @@ const ViewPendingOrders = () => {
               Pending Orders
             </h1>
             <p className="text-gray-600 text-sm sm:text-base">
-              {pendingOrders.length} {pendingOrders.length === 1 ? 'order' : 'orders'} awaiting payment
+              {pendingOrders.length}{" "}
+              {pendingOrders.length === 1 ? "order" : "orders"} awaiting payment
             </p>
           </div>
 
@@ -116,7 +154,9 @@ const ViewPendingOrders = () => {
                   <div className="bg-gradient-to-r from-yellow-50 to-orange-50 px-4 sm:px-5 py-3 border-b border-gray-100">
                     <div className="flex justify-between items-center gap-2">
                       <p className="text-xs sm:text-sm text-gray-600 truncate">
-                        <span className="font-medium text-gray-800">{order.orderId}</span>
+                        <span className="font-medium text-gray-800">
+                          {order.orderId}
+                        </span>
                       </p>
                       <span className="flex items-center gap-1.5 bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
                         <Clock size={13} />
@@ -141,11 +181,14 @@ const ViewPendingOrders = () => {
                           {order.items[0]?.productId?.name || "Product"}
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-500 mb-2">
-                          Quantity: <span className="font-medium text-gray-700">{order.items[0]?.quantity || 0}</span>
+                          Quantity:{" "}
+                          <span className="font-medium text-gray-700">
+                            {order.items[0]?.quantity || 0}
+                          </span>
                         </p>
                         <p className="text-sm sm:text-base text-gray-800 font-bold flex items-center gap-1">
                           <IndianRupee size={15} className="text-gray-600" />
-                          {order.items[0]?.price?.toLocaleString('en-IN') || 0}
+                          {order.items[0]?.price?.toLocaleString("en-IN") || 0}
                         </p>
                       </div>
                     </div>
@@ -154,8 +197,9 @@ const ViewPendingOrders = () => {
                     {order.items.length > 1 && (
                       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg px-3 py-2 mb-4 border border-blue-100">
                         <p className="text-xs sm:text-sm text-blue-700 font-medium flex items-center gap-2">
-                          <ShoppingBag size={14} />
-                          +{order.items.length - 1} more {order.items.length - 1 === 1 ? 'item' : 'items'} (Click to view)
+                          <ShoppingBag size={14} />+{order.items.length - 1}{" "}
+                          more {order.items.length - 1 === 1 ? "item" : "items"}{" "}
+                          (Click to view)
                         </p>
                       </div>
                     )}
@@ -165,11 +209,14 @@ const ViewPendingOrders = () => {
                       <div>
                         <p className="text-xs text-gray-500 mb-1">Ordered on</p>
                         <p className="text-xs sm:text-sm text-gray-700 font-medium">
-                          {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })}
+                          {new Date(order.createdAt).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            }
+                          )}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 bg-gray-50 px-4 py-2.5 rounded-lg">
@@ -177,7 +224,7 @@ const ViewPendingOrders = () => {
                         <div>
                           <p className="text-xs text-gray-500">Total Amount</p>
                           <p className="text-base sm:text-lg text-gray-800 font-bold">
-                            ₹{order.totalAmt?.toLocaleString('en-IN') || 0}
+                            ₹{order.totalAmt?.toLocaleString("en-IN") || 0}
                           </p>
                         </div>
                       </div>
@@ -189,7 +236,6 @@ const ViewPendingOrders = () => {
           )}
         </div>
       </div>
-
       {/* Order Details Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
@@ -197,9 +243,12 @@ const ViewPendingOrders = () => {
             {/* Modal Header */}
             <div className="sticky top-0 bg-gradient-to-r from-yellow-50 to-orange-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Order Details</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                  Order Details
+                </h2>
                 <p className="text-sm text-gray-600 mt-1">
-                  Order ID: <span className="font-semibold">{selectedOrder.orderId}</span>
+                  Order ID:{" "}
+                  <span className="font-semibold">{selectedOrder.orderId}</span>
                 </p>
               </div>
               <button
@@ -218,7 +267,9 @@ const ViewPendingOrders = () => {
                   <Clock size={18} className="text-yellow-600" />
                   <div>
                     <p className="text-xs text-yellow-700">Status</p>
-                    <p className="font-semibold text-yellow-800">Pending Payment</p>
+                    <p className="font-semibold text-yellow-800">
+                      Pending Payment
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
@@ -226,11 +277,14 @@ const ViewPendingOrders = () => {
                   <div>
                     <p className="text-xs text-gray-600">Ordered on</p>
                     <p className="font-semibold text-gray-800">
-                      {new Date(selectedOrder.createdAt).toLocaleDateString("en-IN", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
+                      {new Date(selectedOrder.createdAt).toLocaleDateString(
+                        "en-IN",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )}
                     </p>
                   </div>
                 </div>
@@ -261,15 +315,22 @@ const ViewPendingOrders = () => {
                         </h4>
                         <div className="space-y-1">
                           <p className="text-sm text-gray-600">
-                            Quantity: <span className="font-semibold text-gray-800">{item?.quantity || 0}</span>
+                            Quantity:{" "}
+                            <span className="font-semibold text-gray-800">
+                              {item?.quantity || 0}
+                            </span>
                           </p>
                           <p className="text-base sm:text-lg text-gray-800 font-bold flex items-center gap-1">
                             <IndianRupee size={16} className="text-gray-600" />
-                            {item?.price?.toLocaleString('en-IN') || 0}
+                            {item?.price?.toLocaleString("en-IN") || 0}
                           </p>
                           <p className="text-sm text-gray-500 mt-2">
-                            Subtotal: <span className="font-semibold text-gray-700">
-                              ₹{((item?.price || 0) * (item?.quantity || 0)).toLocaleString('en-IN')}
+                            Subtotal:{" "}
+                            <span className="font-semibold text-gray-700">
+                              ₹
+                              {(
+                                (item?.price || 0) * (item?.quantity || 0)
+                              ).toLocaleString("en-IN")}
                             </span>
                           </p>
                         </div>
@@ -281,20 +342,29 @@ const ViewPendingOrders = () => {
 
               {/* Order Summary */}
               <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Summary</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Order Summary
+                </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between text-gray-700">
                     <span>Items Total:</span>
                     <span className="font-semibold">
-                      ₹{selectedOrder.items.reduce((sum, item) => 
-                        sum + ((item?.price || 0) * (item?.quantity || 0)), 0
-                      ).toLocaleString('en-IN')}
+                      ₹
+                      {selectedOrder.items
+                        .reduce(
+                          (sum, item) =>
+                            sum + (item?.price || 0) * (item?.quantity || 0),
+                          0
+                        )
+                        .toLocaleString("en-IN")}
                     </span>
                   </div>
                   <div className="border-t border-yellow-300 pt-3 flex justify-between items-center">
-                    <span className="text-lg font-semibold text-gray-800">Total Amount:</span>
+                    <span className="text-lg font-semibold text-gray-800">
+                      Total Amount:
+                    </span>
                     <span className="text-2xl font-bold text-gray-900">
-                      ₹{selectedOrder.totalAmt?.toLocaleString('en-IN') || 0}
+                      ₹{selectedOrder.totalAmt?.toLocaleString("en-IN") || 0}
                     </span>
                   </div>
                 </div>

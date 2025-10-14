@@ -12,8 +12,9 @@ const UserSideBar = () => {
           <UserDashHome/>
         </div>
         {/* right part */}
-        <div className="bg-gray-50 min-h-[90vh] flex flex-col gap-6 w-full  h-[100vh] overflow-x-scroll">
+        <div className="bg-gray-50 relative min-h-[90vh] flex flex-col w-full  h-[100vh] overflow-x-scroll">
           <Header />
+        
           <Outlet />
         </div>
       </div>
