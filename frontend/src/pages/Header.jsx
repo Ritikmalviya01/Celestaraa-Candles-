@@ -8,55 +8,53 @@ import Search from "../components/Search";
 import { Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
-import { logout } from "../redux/slices/authSlice.js"; 
+import axios from "axios";
+import { logout } from "../redux/slices/authSlice.js";
 import { useDispatch } from "react-redux";
 import BASE_URL from "../utils/Base_url.js";
 
 const Header = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate()
-  const { isAuthenticated, user } = useSelector((state) => state.auth); 
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   console.log("Location - ", location);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
-const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
-  const navItems = ["About", "Search-candles","Help", "Contact", "Blogs"];
+  const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
+  const navItems = ["About", "Search-candles", "Help", "Contact", "Blogs"];
 
-const Logout = async () => {
-  try {
-    // Start logout request
-    const response = await axios.post(
-      `${BASE_URL}/user/logout`,
-      {},
-      { withCredentials: true } // Important if using cookie-based sessions
-    );
+  const Logout = async () => {
+    try {
+      // Start logout request
+      const response = await axios.post(
+        `${BASE_URL}/user/logout`,
+        {},
+        { withCredentials: true } // Important if using cookie-based sessions
+      );
 
-    if (response.status === 200) {
-      alert("Logout successful");
-      
-      // Optionally clear local auth state if using Redux
-      dispatch(logout());
+      if (response.status === 200) {
+        alert("Logout successful");
 
-      // Navigate to homepage after logout
-      navigate("/");
+        // Optionally clear local auth state if using Redux
+        dispatch(logout());
 
-      // Close popup if open
-      setIsUserPopupOpen(false);
-    } else {
-      alert("Logout failed. Please try again.");
+        // Navigate to homepage after logout
+        navigate("/");
+
+        // Close popup if open
+        setIsUserPopupOpen(false);
+      } else {
+        alert("Logout failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      alert(
+        "Logout error: " +
+          (error.response?.data?.message || error.message || "Unknown error")
+      );
     }
-  } catch (error) {
-    console.error("Error during logout:", error);
-    alert(
-      "Logout error: " +
-        (error.response?.data?.message || error.message || "Unknown error")
-    );
-  }
-};
-
-
+  };
 
   return (
     <header className=" sticky shadow-2xl top-0 py-2.5 px-6 flex justify-center flex-col bg-bg z-50">
@@ -84,12 +82,12 @@ const Logout = async () => {
           <Search />
         </div>
         <div className="login flex items-center gap-5">
-          <Link to="/cart">
-            <button className="lg:hidden">
+          <Link className="h-5" to="/cart">
+            <button className="lg:hidden h-5">
               <FaCartShopping size={20} />
             </button>
           </Link>
-       
+
           <button
             onClick={() => setIsDesktopOpen(!isDesktopOpen)}
             className="hidden lg:block"
@@ -129,7 +127,7 @@ const Logout = async () => {
               </button>
             </Link> */}
             {/* 👤 User Icon */}
-            <div className="relative">
+            <div className="relative h-5">
               <button onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}>
                 <FaUserAlt size={20} />
               </button>
@@ -152,13 +150,12 @@ const Logout = async () => {
                       >
                         Dashboard
                       </button>
-                     <button
-  onClick={Logout}
-  className="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/80 transition"
->
-  Log Out
-</button>
-
+                      <button
+                        onClick={Logout}
+                        className="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/80 transition"
+                      >
+                        Log Out
+                      </button>
                     </>
                   ) : (
                     <>

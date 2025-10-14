@@ -11,10 +11,19 @@
     "postbuild": "react-snap"
   },
   "reactSnap": {
-    "include": ["/","/About","/Contact", "/search-candles", "/search-candles/:id"],
+    "include": [
+      "/",
+      "/About",
+      "/Contact",
+      "/search-candles",
+      "/search-candles/:id"
+    ],
     "source": "dist",
     "destination": "dist",
-    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"]
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
