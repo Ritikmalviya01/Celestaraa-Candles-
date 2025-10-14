@@ -3,15 +3,19 @@ import ProductCard from "../../../components/ProductCard";
 import { FaChevronDown, FaChevronUp, FaFilter } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { SearchQuery } from "../../../components/Context";
-import axios from "axios";
+
 import BASE_URL from "../../../utils/Base_url";
-import { Link } from "react-router-dom";
+
 
 // 🧩 Filter Section
+import axios from "axios";
+import { Link } from "react-router-dom";
+import SEO from "../../../components/SEO";
+
 const FilterSection = ({ title, options, selected, onChange }) => {
   const [open, setOpen] = useState(true);
 
-  // Special handling for Price range
+  // Special handling for price (numeric input)
   if (title === "Price") {
     const [min, max] = selected;
     return (
@@ -28,6 +32,7 @@ const FilterSection = ({ title, options, selected, onChange }) => {
             <input
               type="number"
               placeholder="Min"
+              aria-label="Minimum price"
               value={min || ""}
               onChange={(e) =>
                 onChange("Price", [
@@ -40,6 +45,7 @@ const FilterSection = ({ title, options, selected, onChange }) => {
             <input
               type="number"
               placeholder="Max"
+              aria-label="Maximum price"
               value={max || ""}
               onChange={(e) =>
                 onChange("Price", [
@@ -55,7 +61,7 @@ const FilterSection = ({ title, options, selected, onChange }) => {
     );
   }
 
-  // Checkbox filters
+  // Default for checkbox filters
   return (
     <div className="border-b border-gray-200 py-4">
       <button
@@ -81,7 +87,7 @@ const FilterSection = ({ title, options, selected, onChange }) => {
                   }
                   onChange(title, updated);
                 }}
-                className="w-4 h-4 accent-primary cursor-pointer"
+                className="w-4 h-4 accent-[#C9A489] cursor-pointer"
               />
               <span className="text-sm tracking-wide">{opt}</span>
             </label>
@@ -127,6 +133,7 @@ const SearchCandlesPage = () => {
     Price: [null, null],
   });
 
+  // handle filter change
   const handleFilterChange = (title, selected) => {
     setFilters((prev) => ({ ...prev, [title]: selected }));
   };
@@ -173,24 +180,17 @@ const SearchCandlesPage = () => {
     )
       return false;
 
-    if (
-      filters["Color"].length > 0 &&
-      !filters["Color"].includes(p.more_details?.color)
-    )
+    if (filters["Color"].length > 0 && !filters["Color"].includes(p.more_details?.color))
       return false;
 
     if (
       filters["Eco-Friendly"].length > 0 &&
-      !filters["Eco-Friendly"].every((f) =>
-        p.more_details?.ecoFriendly?.includes(f)
-      )
+      !filters["Eco-Friendly"].every((f) => p.more_details?.ecoFriendly.includes(f))
     )
       return false;
 
-    if (filters["Rating"].includes("4★ & up") && p.more_details?.rating < 4)
-      return false;
-    if (filters["Rating"].includes("3★ & up") && p.more_details?.rating < 3)
-      return false;
+    if (filters["Rating"].includes("4★ & up") && p.more_details?.rating < 4) return false;
+    if (filters["Rating"].includes("3★ & up") && p.more_details?.rating < 3) return false;
 
     if (
       filters["Occasion"].length > 0 &&
@@ -199,12 +199,13 @@ const SearchCandlesPage = () => {
       return false;
 
     if (value.SearchTerm) {
-      const s = value.SearchTerm.toLowerCase();
+      const searchLower = value.SearchTerm.toLowerCase();
       if (
-        !p.name.toLowerCase().includes(s) &&
-        !p.description.toLowerCase().includes(s)
-      )
+        !p.name.toLowerCase().includes(searchLower) &&
+        !p.description.toLowerCase().includes(searchLower)
+      ) {
         return false;
+      }
     }
     return true;
   });
@@ -223,8 +224,16 @@ const SearchCandlesPage = () => {
     { title: "Occasion", options: ["Gift Sets", "Holiday", "Romantic", "Relaxation", "Luxury"] },
   ];
 
+  // SEO Metadata
+  const seoTitle = value.SearchTerm
+    ? `Search results for "${value.SearchTerm}" | Celestaraa Candles`
+    : "Search Candles | Celestaraa";
+  const seoDescription = "Find your perfect scented candle by aroma, size, wax type, color, and more.";
+
   return (
-    <div className="relative flex flex-col gap-6 p-4 bg-bg ">
+    <>
+      <SEO title={seoTitle} description={seoDescription} url="https://yourdomain.com/search-candles" />
+      <div className="relative flex flex-col gap-6 p-4 bg-bg ">
       {/* 🔘 Mobile Filter Toggle */}
     { !isFilterOpen&& <div className="lg:hidden flex fixed z-50  right-1 justify-end">
         <button
@@ -236,8 +245,7 @@ const SearchCandlesPage = () => {
       </div>
 }
       <div className="main flex gap-6">
-        {/* 🧾 Sidebar (desktop) */}
-        <aside className="hidden lg:block lg:w-1/4 bg-white p-5 rounded-lg border border-gray-200 font-heading shadow-sm h-fit sticky top-4">
+          <aside className="hidden lg:block lg:w-1/4 bg-white p-5 rounded-lg border border-gray-200 font-heading shadow-sm h-fit sticky top-4">
           <h2 className="text-xl font-bold mb-4">Filters</h2>
           {filterConfigs.map((filter) => (
             <FilterSection
@@ -250,8 +258,7 @@ const SearchCandlesPage = () => {
           ))}
         </aside>
 
-        {/* 🕯 Products Grid */}
-        <div className="w-full lg:w-3/4 grid gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
+           <div className="w-full lg:w-3/4 grid gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8">
           {filteredProducts.length === 0 ? (
             <div className="col-span-full text-center text-gray-500">
               No Candles Found
@@ -265,8 +272,7 @@ const SearchCandlesPage = () => {
           )}
         </div>
       </div>
-
-      {/* 📱 Mobile Filter Drawer */}
+          {/* 📱 Mobile Filter Drawer */}
       {isFilterOpen && (
         <>
           <div
@@ -298,6 +304,8 @@ const SearchCandlesPage = () => {
         </>
       )}
     </div>
+      
+    </>
   );
 };
 

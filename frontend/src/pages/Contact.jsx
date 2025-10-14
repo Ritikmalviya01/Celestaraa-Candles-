@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
+import SEO from "../components/SEO";
 // import axios from "axios"; // uncomment later when backend is ready
 // import BASE_URL from "../../utils/Base_url"; // optional if you have one
 
@@ -60,6 +61,13 @@ const Contact = () => {
   return (
     <div className="bg-bg text-gray-800 px-6 py-16 md:px-20 lg:px-32 flex flex-col gap-16">
       {/* ✨ Section 1 - Heading */}
+
+        <SEO
+    title="Contact GlowAura Candles | Reach Out to Us"
+    description="Get in touch with GlowAura Candles. Questions, feedback, or just a hello — our team is here to help!"
+    image="/assets/contact.png"
+    url="https://yourdomain.com/contact"
+  />
       <section className="text-center flex flex-col gap-4">
         <h3 className="text-2xl font-heading tracking-wider text-primary">
           CONTACT US

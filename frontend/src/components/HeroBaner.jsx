@@ -3,6 +3,7 @@ import baner1 from "../assets/baner1.png"
 import baner2 from "../assets/baner2.png"
 import baner3 from "../assets/baner3.png"
 import baner4 from "../assets/baner4.png"
+import { Link } from "react-router-dom";
 
 
 const images = [
@@ -42,19 +43,22 @@ export default function HeroBanner() {
 
       {/* Overlay Content */}
       <div className="absolute p-6 sm:p-2 inset-0 flex flex-col justify-center items-center text-center text-white bg-black/25">
-        <h1 className="text-3xl md:text-5xl font-heading  font-bold drop-shadow-lg">
-          Aromatic Glow
+        <h1 className="text-3xl md:text-6xl font-heading  font-bold drop-shadow-lg">
+          Celestaraa Candles
         </h1>
         <p className="mt-2 font-text max-w-lg text-sm md:text-lg ">
-          Hand-poured soy candles for a peaceful & relaxing vibe.
-        </p>
+Every Melt a Story, Every Glow a Promise        </p>
         <div className="mt-4 flex gap-4">
+          <Link  to="/search-candles">
           <button className="px-6 py-2 hover:bg-primary hover:text-white text-black rounded-xl shadow bg-bg transition">
             Shop Now
           </button>
+          </Link>
+          <Link to="/about">
           <button className="px-6 py-2 border hover:border-primary rounded-xl hover:bg-primary hover:text-white transition">
             Learn More
           </button>
+          </Link>
         </div>
       </div>
 

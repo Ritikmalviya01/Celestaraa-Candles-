@@ -16,19 +16,19 @@ const AdminDashHome = () => {
   };
 
   return (
-    <div className="w-full px-4 py-6 flex flex-col gap-6 bg-gradient-to-b from-gray-50 to-gray-100 rounded-2xl shadow-inner min-h-screen">
+    <div className="w-full px-4 py-6 flex flex-col gap-6 bg-gradient-to-b from-gray-50 to-gray-100 rounded-2xl shadow-inner min-h-screen lg:min-h-0 lg:h-full lg:sticky lg:top-0">
       {/* Logo Section */}
-      <div className="hidden lg:flex justify-center">
+      <div className="flex lg:flex-col justify-between lg:justify-center items-center lg:items-start">
         <Link to="/" className="flex items-center gap-2">
           <img
             alt="logoSidebar"
             src="/logo192.png"
             className="w-10 h-10 object-contain"
           />
-          <span className="text-lg font-bold text-gray-700 tracking-wide">
-            Dashboard
-          </span>
         </Link>
+        <span className="hidden lg:block text-lg font-bold mt-10 text-gray-700 tracking-wide">
+          Dashboard
+        </span>
       </div>
 
       {/* Navigation Section */}
@@ -46,7 +46,7 @@ const AdminDashHome = () => {
                 }`}
             >
               <span className="text-lg">{item.icon}</span>
-              <span>{item.name}</span>
+              <span className="truncate">{item.name}</span>
             </Link>
           ) : (
             <div
@@ -64,7 +64,7 @@ const AdminDashHome = () => {
                       : "text-gray-700 hover:bg-primary-50 hover:text-primary"
                   }`}
               >
-                <span className="flex items-center gap-3">
+                <span className="flex items-center gap-3 truncate">
                   <span className="text-lg">{item.icon}</span>
                   {item.section}
                 </span>
@@ -98,8 +98,8 @@ const AdminDashHome = () => {
                           : "text-gray-600 hover:bg-primary-50 hover:text-primary"
                       }`}
                   >
-                    <GoDotFill size={10} />
-                    {subItem.name}
+                    <GoDotFill size={10}  />
+                    <span className="truncate ">{subItem.name}</span>
                   </Link>
                 ))}
               </div>
