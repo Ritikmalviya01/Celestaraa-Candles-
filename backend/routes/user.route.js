@@ -15,7 +15,7 @@ userRouter.post('/logout', logoutController)
 userRouter.put('/update-user', auth(["USER"]) , updateUserDetails)
 userRouter.put('/forgot-password', forgotPasswordController)
 userRouter.get('/products' , getAllProductsForUser);
-userRouter.get('/singleProduct/:_id', getProductById)
+userRouter.get('/singleProduct/:slug', getProductById)
 userRouter.post('/add-to-cart' ,auth(["USER"])  , addToCart )
 userRouter.get("/get-cart", auth(["USER"]), getCart);
 userRouter.put("/update-cart", auth(["USER"])  , updateCart)

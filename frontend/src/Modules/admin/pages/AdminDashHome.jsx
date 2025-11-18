@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
+import logo from "../../../assets/candle-logo.png"
 // import logoSidebar from "../../../assets/logoSidebar.png";
 import { linksAdmin } from "../data/text";
 
@@ -19,7 +20,7 @@ console.log("nothingd")
     <div className="w-full lg:px-4 lg:py-6 bg-bg flex flex-col gap-6">
       <div className="hidden lg:block">
         <Link to={"/"}>
-          <img  alt="logoSidebar" />
+          <img src={logo} alt="logoSidebar" />
         </Link>
       </div>
       <div className="w-full flex flex-col gap-2">

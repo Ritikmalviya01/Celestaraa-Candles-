@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BASE_URL from '../../../utils/Base_url';
+import SEO from '../../../components/SEO.jsx'; // Adjust path based on your structure
+import { BreadcrumbSchema, WebsiteSchema } from '../../../components/StructuredData.jsx'; // Adjust path
 
 export default function CandleBlog() {
   const navigate = useNavigate();
@@ -99,8 +101,35 @@ export default function CandleBlog() {
   }
 
   const featuredPost = blogs[0];
+    const pageUrl = typeof window !== 'undefined' ? window.location.href : 'https://celestaraa.com/blog';
+
 
   return (
+    <>
+    <SEO
+        title="Candle Blog - Tips, Care Guides & Scent Stories"
+        description="Explore our candle blog for expert tips on candle care, scent pairing guides, DIY tutorials, and inspiring stories about handcrafted candles. Learn how to make your candles last longer and create the perfect ambiance."
+        keywords="candle blog, candle care tips, scented candle guide, candle burning tips, handmade candles, soy candles, candle scents, home fragrance, candle making, aromatherapy candles"
+        url={pageUrl}
+        type="website"
+        image={blogs.length > 0 ? `${BASE_URL}${blogs[0].image}` : 'https://celestaraa.com/default-blog-image.jpg'}
+      />
+
+      {/* Structured Data - Breadcrumbs */}
+      <BreadcrumbSchema 
+        items={[
+          { name: "Home", url: "https://celestaraa.com" },
+          { name: "Blog", url: pageUrl }
+        ]}
+      />
+
+      {/* Structured Data - Website Search */}
+      <WebsiteSchema 
+        name="Your Candle Shop Blog"
+        url={pageUrl}
+        description="Discover candle care tips, DIY guides, and stories about handcrafted candles"
+      />
+
     <div className="bg-gradient-to-br from-gray-50 via-white to-gray-50 min-h-screen">
       {featuredPost && (
         <div className="max-w-7xl mx-auto px-4 py-12">
@@ -108,10 +137,10 @@ export default function CandleBlog() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center mb-16">
             <div 
               className="relative overflow-hidden rounded-3xl shadow-2xl group cursor-pointer transform hover:scale-[1.02] transition-all duration-500"
-              onClick={() => handleBlogClick(featuredPost._id)}
+              onClick={() => handleBlogClick(featuredPost.slug)}
             >
               <img
-                src={`http://localhost:8000${featuredPost.image}`}
+                src={`${BASE_URL}${featuredPost.image}`}
                 alt={featuredPost.title}
                 className="w-full h-96 object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -135,7 +164,7 @@ export default function CandleBlog() {
               </div>
               <h1 
                 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight font-heading cursor-pointer hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-primary/60 hover:to-primary transition-all duration-300"
-                onClick={() => handleBlogClick(featuredPost._id)}
+                onClick={() => handleBlogClick(featuredPost.slug)}
               >
                 {featuredPost.title}
               </h1>
@@ -143,7 +172,7 @@ export default function CandleBlog() {
                 {truncateText(stripHtml(featuredPost.content), 200)}
               </p>
               <button
-                onClick={() => handleBlogClick(featuredPost._id)}
+                onClick={() => handleBlogClick(featuredPost.slug)}
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary/60 to-primary/90 text-white font-bold tracking-wider uppercase rounded-full hover:from-primary/70 hover:to-primary transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl"
               >
                 Read Full Story
@@ -165,22 +194,22 @@ export default function CandleBlog() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {currentBlogs.slice(1).map((post, index) => (
                   <div 
-                    key={post._id} 
+                    key={post.slug} 
                     className="group cursor-pointer transform hover:-translate-y-2 transition-all duration-500"
-                    onClick={() => handleBlogClick(post._id)}
-                    onMouseEnter={() => setHoveredCard(post._id)}
+                    onClick={() => handleBlogClick(post.slug)}
+                    onMouseEnter={() => setHoveredCard(post.slug)}
                     onMouseLeave={() => setHoveredCard(null)}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
                       <div className="relative overflow-hidden">
                         <img
-                          src={`http://localhost:8000${post.image}`}
+                          src={`${BASE_URL}${post.image}`}
                           alt={post.title}
                           className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className={`absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg transform transition-all duration-500 ${hoveredCard === post._id ? 'scale-100 rotate-0' : 'scale-0 rotate-180'}`}>
+                        <div className={`absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg transform transition-all duration-500 ${hoveredCard === post.slug ? 'scale-100 rotate-0' : 'scale-0 rotate-180'}`}>
                           <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -300,5 +329,6 @@ export default function CandleBlog() {
         </div>
       )}
     </div>
+    </>
   );
 }

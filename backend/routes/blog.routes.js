@@ -1,5 +1,7 @@
 import express from "express";
 const blogRouter = express.Router();
+import upload from '../middleware/multer.js';
+
 
 
 import {
@@ -15,9 +17,10 @@ getAllBlogs,
 import { auth } from "../middleware/auth.js";
 
 blogRouter.get("/blogs" ,  getAllBlogs);
-blogRouter.get("/blog/:id" ,  getBlogById);
+blogRouter.get("/:slug" ,  getBlogById);
 
-blogRouter.post("/createBlog", auth(["ADMIN"]), uploadBlogImage, createBlog);
+blogRouter.post("/createBlog", auth(["ADMIN"]),  upload.single("image"),   // <-- multer processes file first
+ uploadBlogImage, createBlog);
 // router.put("/updateBlog/:id", updateBlog);
 blogRouter.delete("/deleteBlog/:id",auth(["ADMIN"]), deleteBlog);
 

@@ -480,10 +480,10 @@ export const getAllProductsForUser = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   try {
-    const { _id } = req.params; // get product ID from URL
+    const { slug } = req.params; // get product ID from URL
 
     // Find product by ID and only published products
-    const product = await ProductModel.findOne({ _id: _id, publish: true })
+    const product = await ProductModel.findOne({ slug, publish: true })
       .populate("category", "name"); // populate category name only
 
     if (!product) {

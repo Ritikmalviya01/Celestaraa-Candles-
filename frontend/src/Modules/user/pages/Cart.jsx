@@ -43,7 +43,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/user/get-cart`, {
+        const res = await axios.get(`${BASE_URL}/user/get-cart`, {
           withCredentials: true,
         });
         if (res.data.success) {

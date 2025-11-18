@@ -100,6 +100,8 @@ const FilterSection = ({ title, options, selected, onChange }) => {
 
 // 🕯 Main Page
 const SearchCandlesPage = () => {
+      const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
+
   const [productDetails, setProductDetails] = useState([]);
   const value = useContext(SearchQuery);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // mobile drawer state
@@ -232,7 +234,7 @@ const SearchCandlesPage = () => {
 
   return (
     <>
-      <SEO title={seoTitle} description={seoDescription} url="https://yourdomain.com/search-candles" />
+      <SEO title={seoTitle} description={seoDescription} url={`${SITE_URL}/search-candles`} />
       <div className="relative flex flex-col gap-6 p-4 bg-bg ">
       {/* 🔘 Mobile Filter Toggle */}
     { !isFilterOpen&& <div className="lg:hidden flex fixed z-50  right-1 justify-end">
@@ -265,7 +267,7 @@ const SearchCandlesPage = () => {
             </div>
           ) : (
             filteredProducts.map((eachProduct, i) => (
-              <Link to={`/search-candles/${eachProduct._id}`} key={i}>
+              <Link to={`/search-candles/${eachProduct.slug}`} key={i}>
                 <ProductCard eachProduct={eachProduct} />
               </Link>
             ))

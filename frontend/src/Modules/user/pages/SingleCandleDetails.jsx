@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Helmet } from "react-helmet-async";
 
 const SingleCandleDetails = () => {
-  const { _id } = useParams();
+  const { slug} = useParams();
   const [quantity, setQuantity] = useState(1);
   const [openSection, setOpenSection] = useState(null);
   const [product, setProduct] = useState(null);
@@ -39,7 +39,7 @@ const SingleCandleDetails = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/user/singleProduct/${_id}`,
+          `${BASE_URL}/user/singleProduct/${slug}`,
           { withCredentials: true } // optional if your backend uses cookies
         );
         setProduct(response.data?.product);
@@ -51,7 +51,7 @@ const SingleCandleDetails = () => {
       }
     };
     fetchProduct();
-  }, [_id]);
+  }, [slug]);
 
   if (loading) return <p>Loading product...</p>;
   if (error) return <p>{error}</p>;
@@ -192,8 +192,8 @@ const SingleCandleDetails = () => {
       <div className="similar-cards">
         <h2 className="flex justify-center font-heading text-5xl my-10">More Candles</h2>
         <div className="cardMainRight p-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto lg:overflow-x-hidden">
-          {productDetails.filter(p => p._id !== _id).slice(0, 4).map((eachProduct) => (
-            <Link key={eachProduct._id} to={`/search-candles/${eachProduct._id}`}>
+          {productDetails.filter(p => p.slug !== slug).slice(0, 4).map((eachProduct) => (
+            <Link key={eachProduct.slug} to={`/search-candles/${eachProduct.slug}`}>
               <ProductCard eachProduct={eachProduct} />
             </Link>
           ))}

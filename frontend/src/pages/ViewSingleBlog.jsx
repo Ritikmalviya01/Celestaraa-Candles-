@@ -2,23 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Loader2, AlertCircle, Eye } from 'lucide-react';
 import axios from 'axios';
-import BASE_URL from '../utils/Base_url';
+import BASE_URL from '../utils/Base_url'
+import SEO from '../components/SEO';
+
 const ViewSingleBlog = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+    const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
+
   useEffect(() => {
     fetchBlog();
-  }, [id]);
+  }, [slug]);
 
   const fetchBlog = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`${BASE_URL}/blog/blog/${id}`, {
+      const response = await axios.get(`${BASE_URL}/blog/${slug}`, {
         withCredentials: true
       });
 
@@ -51,9 +55,9 @@ const ViewSingleBlog = () => {
     
     // Replace relative image paths with absolute URLs
     return content.replace(
-      /src="(\/[^"]+)"/g,
-      `src="http://localhost:8000$1"`
-    );
+  /src="(\/[^"]+)"/g,
+  `src="${blog.image}"`
+);
   };
 
   if (loading) {
@@ -107,9 +111,17 @@ const ViewSingleBlog = () => {
       </div>
     );
   }
-
+  const seoTitle = blog.title ? `${blog.title} | Celestaraa Blogs` : 'Celestaraa Blog';
+  const seoDescription = blog.content
+    ? blog.content.replace(/<[^>]+>/g, '').slice(0, 160) + '...'
+    : 'Read this amazing blog post from Celestaraa.';
+  const seoImage = blog.image;
+  const seoUrl = `${SITE_URL}/blog/${blog.slug}`;
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
+       {/* ✅ SEO Meta Tags */}
+         <SEO title={seoTitle} description={seoDescription} image={seoImage} url={seoUrl} />
+
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <button
@@ -125,7 +137,7 @@ const ViewSingleBlog = () => {
           {/* Featured Image */}
           <div className="relative h-96 overflow-hidden">
             <img
-              src={`http://localhost:8000${blog.image}`}
+              src={blog.image}
               alt={blog.title}
               className="w-full h-full object-cover"
             />

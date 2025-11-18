@@ -2,8 +2,9 @@ import multer from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
-import Blog from "../models/Blog.model.js";
-
+import Blog from "../models/blog.model.js";
+import { v2 as cloudinary } from "cloudinary";
+import { JSDOM } from "jsdom";
 // Configure multer storage for featured image
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -35,96 +36,110 @@ const upload = multer({
 });
 
 // Export upload middleware
-export const uploadBlogImage = upload.single("image");
+export const uploadBlogImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No featured image provided",
+      });
+    }
+
+    // Wrap upload_stream in a Promise
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "blogs/featured" },
+        (error, result) => {
+          if (error) {
+            console.error("Cloudinary Error:", error);
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+
+      stream.end(req.file.buffer); // write buffer to Cloudinary
+    });
+
+    req.featuredImageUrl = uploadResult.secure_url;
+    next();
+
+  } catch (error) {
+    console.error("Upload Middleware Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Image upload failed",
+    });
+  }
+};
 
 // Helper function to extract and save base64 images from ReactQuill content
-const processQuillImages = async (content) => {
-  // Regular expression to find base64 images in img tags
-  const base64Regex = /<img[^>]+src="data:image\/([^;]+);base64,([^"]+)"/g;
-  let match;
-  let processedContent = content;
-  
-  while ((match = base64Regex.exec(content)) !== null) {
-    const fullMatch = match[0];
-    const imageType = match[1]; // jpeg, png, etc.
-    const base64Data = match[2];
-    
+
+
+export const processQuillImages = async (content) => {
+  const dom = new JSDOM(content);
+  const document = dom.window.document;
+
+  const images = document.querySelectorAll("img");
+
+  for (let img of images) {
+    const src = img.getAttribute("src");
+
+    // Only process base64 images
+    if (!src.startsWith("data:image")) continue;
+
     try {
-      // Generate unique filename
-      const filename = `${uuidv4()}.${imageType}`;
-      const filepath = path.join("uploads/blogs", filename);
-      
-      // Convert base64 to buffer and save
-      const buffer = Buffer.from(base64Data, 'base64');
-      
-      // Create directory if it doesn't exist
-      if (!fs.existsSync("uploads/blogs")) {
-        fs.mkdirSync("uploads/blogs", { recursive: true });
-      }
-      
-      fs.writeFileSync(filepath, buffer);
-      
-      // Replace base64 src with file URL
-      const imageUrl = `/uploads/blogs/${filename}`;
-      processedContent = processedContent.replace(
-        fullMatch,
-        `<img src="${imageUrl}"`
-      );
-    } catch (error) {
-      console.error("Error processing image:", error);
+      const uploadResponse = await cloudinary.uploader.upload(src, {
+        folder: "blogs/content",
+      });
+
+      img.setAttribute("src", uploadResponse.secure_url);
+    } catch (err) {
+      console.error("Error uploading Quill image:", err);
     }
   }
-  
-  return processedContent;
+
+  return document.body.innerHTML;
 };
+
+
 
 // Create Blog Controller
 export const createBlog = async (req, res) => {
   try {
     const { title, content } = req.body;
 
-    // Validate required fields
     if (!title || !content) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Title and content are required" 
+        message: "Title and content required",
       });
     }
 
-    // Check if featured image was uploaded
-    if (!req.file) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Featured blog image is required" 
-      });
-    }
+    // Featured image URL from Cloudinary middleware
+    const featuredImageUrl = req.featuredImageUrl;
 
-    // Create featured image URL path
-    const featuredImagePath = `/uploads/blogs/${req.file.filename}`;
-
-    // Process content to extract and save any base64 images from ReactQuill
+    // Process quill images (your existing function)
     const processedContent = await processQuillImages(content);
 
-    // Create new blog
-    const blog = new Blog({ 
-      title, 
-      content: processedContent, // Save processed content with image URLs
-      image: featuredImagePath 
+    const blog = await Blog.create({
+      title,
+      content: processedContent,
+      image: featuredImageUrl,
     });
 
-    await blog.save();
-
-    return res.status(201).json({ 
+    res.status(201).json({
       success: true,
-      message: "Blog created successfully", 
-      blog 
+      message: "Blog created",
+      blog,
     });
 
   } catch (error) {
     console.log("Error creating blog:", error);
-    return res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: error.message || "Error creating blog" 
+      message: "Error creating blog",
     });
   }
 };
@@ -148,7 +163,7 @@ export const getAllBlogs = async (req, res) => {
 // Get single blog by ID
 export const getBlogById = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findOne({slug : req.params.slug});
     if (!blog) {
       return res.status(404).json({ 
         success: false, 

@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
-
+import slugify from "slugify";
 const blogSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, "Title is required"],
     trim: true,
     maxLength: [200, "Title cannot exceed 200 characters"]
+  },
+  slug: {
+    type: String,
+    unique: true,
+    lowercase: true,
   },
   content: {
     type: String,
@@ -27,6 +32,14 @@ const blogSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true
+});
+
+
+
+blogSchema.pre("save", function (next) {
+  if (!this.isModified("title")) return next();
+  this.slug = slugify(this.title, { lower: true, strict: true });
+  next();
 });
 
 export default mongoose.model("Blog", blogSchema);
