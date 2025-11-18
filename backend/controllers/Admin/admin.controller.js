@@ -9,6 +9,8 @@ import generatedAccessToken from "../../utils/generatedAccessToken.js";
 import generatedRefreshToken from "../../utils/generatedRefreshToken.js";
 import uploadImageCloudinary from "../../utils/uploadImageCloudinary.js";
 import TestimonialModel from "../../models/testimonial.model.js";
+import { v2 as cloudinary } from "cloudinary";
+
 
 export async function AdminLoginController(req, res) {
   try {
@@ -338,7 +340,7 @@ export const deleteProduct = async (req, res) => {
 // ✅ Add Testimonial
 export const addTestimonial = async (req, res) => {
   try {
-    const { name, description, image } = req.body;
+    const { name, description } = req.body;
 
     if (!name || !description) {
       return res.status(400).json({
@@ -347,11 +349,27 @@ export const addTestimonial = async (req, res) => {
       });
     }
 
+    let imageUrl = "";
+
+    // If user uploaded a photo → upload to Cloudinary
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder: "testimonials" },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        ).end(req.file.buffer);
+      });
+
+      imageUrl = uploadResult.secure_url;
+    }
+
     const testimonial = new TestimonialModel({
       name,
       description,
-      // rating: rating || 5,
-      image: image || "",
+      image: imageUrl,
     });
 
     await testimonial.save();
@@ -362,6 +380,7 @@ export const addTestimonial = async (req, res) => {
       data: testimonial,
     });
   } catch (err) {
+    console.log("Error:", err);
     res.status(500).json({
       success: false,
       message: err.message,
@@ -387,9 +406,10 @@ export const listTestimonials = async (req, res) => {
 };
 
 // ✅ Delete Testimonial
+
 export const deleteTestimonial = async (req, res) => {
   try {
-    const { testimonialId } = req.params;
+    const { testimonialId } = req.body;
 
     if (!testimonialId) {
       return res.status(400).json({
@@ -398,23 +418,42 @@ export const deleteTestimonial = async (req, res) => {
       });
     }
 
-    const deleted = await TestimonialModel.findByIdAndDelete(testimonialId);
+    const testimonial = await TestimonialModel.findById(testimonialId);
 
-    if (!deleted) {
+    if (!testimonial) {
       return res.status(404).json({
         success: false,
         message: "Testimonial not found",
       });
     }
 
-    res.json({
+    // OPTIONAL → delete image from Cloudinary if exists
+    if (testimonial.image) {
+      try {
+        // Extract publicId from secure_url
+        // Example: https://res.cloudinary.com/.../testimonials/abc123.jpg
+        const urlParts = testimonial.image.split("/");
+        const filename = urlParts[urlParts.length - 1]; // abc123.jpg
+        const publicId = "testimonials/" + filename.split(".")[0]; // testimonials/abc123
+
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.log("Cloudinary delete error:", err);
+      }
+    }
+
+    await TestimonialModel.findByIdAndDelete(testimonialId);
+
+    return res.json({
       success: true,
       message: "Testimonial deleted successfully",
     });
+
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: err.message,
     });
   }
 };
+

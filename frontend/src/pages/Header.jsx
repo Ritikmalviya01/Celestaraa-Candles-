@@ -8,15 +8,16 @@ import Search from "../components/Search";
 import { Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "axios"
 import { logout } from "../redux/slices/authSlice.js";
 import { useDispatch } from "react-redux";
 import BASE_URL from "../utils/Base_url.js";
+import logo from "../assets/candle-logo.png"
 
 const Header = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   console.log("Location - ", location);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -51,10 +52,12 @@ const Header = () => {
       console.error("Error during logout:", error);
       alert(
         "Logout error: " +
-          (error.response?.data?.message || error.message || "Unknown error")
+        (error.response?.data?.message || error.message || "Unknown error")
       );
     }
   };
+
+
 
   return (
     <header className=" sticky shadow-2xl top-0 py-2.5 px-6 flex justify-center flex-col bg-bg z-50">
@@ -63,20 +66,20 @@ const Header = () => {
           location.pathname.startsWith("/user") ||
           location.pathname.startsWith("/admin")
         ) && (
-          <Link to="/">
-            <div className="h-full">
-              <div className="h-full flex justify-center items-center ">
-                <img
-                  width={170}
-                  height={45}
-                  alt="Logo"
-                  className="hidden lg:block"
-                />
-                <img width={170} height={45} alt="Logo" className="lg:hidden" />
+            <Link to="/">
+              <div className="h-full">
+                <div className="h-full flex justify-center items-center ">
+                  <img
+
+                    alt="Logo"
+                    src={logo}
+                    className="hidden lg:block w-60"
+                  />
+                  <img width={170} height={45} alt="Logo" src={logo} className="lg:hidden" />
+                </div>
               </div>
-            </div>
-          </Link>
-        )}
+            </Link>
+          )}
 
         <div className="search hidden lg:block">
           <Search />
@@ -92,7 +95,7 @@ const Header = () => {
             onClick={() => setIsDesktopOpen(!isDesktopOpen)}
             className="hidden lg:block"
           >
-            {isDesktopOpen ? <X size={22} /> : <TiThMenu size={22} />}
+            {isDesktopOpen ? <X size={20} /> : <TiThMenu size={20} />}
           </button>
           {isDesktopOpen && (
             <div className="absolute top-full left-0 w-full text-center z-100 bg-primary/80 shadow-sm hidden lg:block">
@@ -102,8 +105,7 @@ const Header = () => {
                     key={item}
                     to={`/${item}`}
                     className={({ isActive }) =>
-                      `block capitalize transition-colors duration-300 hover:text-primary3 ${
-                        isActive ? "font-semibold" : "text-primary1"
+                      `block capitalize transition-colors duration-300 hover:text-primary3 ${isActive ? "font-semibold" : "text-primary1"
                       }`
                     }
                     onClick={() => setIsDesktopOpen(false)}
@@ -115,7 +117,7 @@ const Header = () => {
             </div>
           )}
 
-          <div className=" flex items-center gap-6  ">
+          <div className=" flex items-center gap-6   ">
             <Link to="/cart">
               <button className="hidden lg:block">
                 <FaCartShopping size={20} />
@@ -127,7 +129,7 @@ const Header = () => {
               </button>
             </Link> */}
             {/* 👤 User Icon */}
-            <div className="relative h-5">
+            <div className="relative">
               <button onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}>
                 <FaUserAlt size={20} />
               </button>
@@ -150,6 +152,8 @@ const Header = () => {
                       >
                         Dashboard
                       </button>
+                     
+
                       <button
                         onClick={Logout}
                         className="bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary/80 transition"
@@ -197,8 +201,7 @@ const Header = () => {
                       key={item}
                       to={`/${item}`}
                       className={({ isActive }) =>
-                        `block capitalize transition-colors duration-300 hover:text-primary3 ${
-                          isActive ? "font-semibold" : "text-primary1"
+                        `block capitalize transition-colors duration-300 hover:text-primary3 ${isActive ? "font-semibold" : "text-primary1"
                         }`
                       }
                       onClick={() => setIsMobileOpen(false)} // close on click

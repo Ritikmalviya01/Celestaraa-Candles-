@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"
 import BASE_URL from "../../../utils/Base_url"
+import { ToastContainer, toast } from 'react-toastify';
+
 // Dummy data for now (replace with API/Context data later)
 const dummyTestimonials = [
   {
@@ -43,7 +45,7 @@ const ViewTestimonials = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  
     const fetchTestimonials = async () => {
       try {
         const response = await axios.get(
@@ -60,9 +62,34 @@ const ViewTestimonials = () => {
         setLoading(false);
       }
     };
-
+useEffect(() => {
     fetchTestimonials();
   }, []);
+
+ const handleDelete = async (_id) => {
+  if (!window.confirm("Are you sure you want to delete this testimonial?")) {
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/admin/delete-testimonial`,
+      { testimonialId: _id },
+      { withCredentials: true }
+    );
+
+    if (response.data.success) {
+      toast.success("Testimonial deleted successfully");
+      // Refresh list
+      fetchTestimonials();
+    } else {
+      toast.error(response.data.message);
+    }
+  } catch (error) {
+    console.error("Delete error:", error);
+    toast.error("Failed to delete testimonial");
+  }
+};
 
   if (loading) return <p>Loading testimonials...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -77,13 +104,13 @@ const ViewTestimonials = () => {
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
         {testimonials.map((t) => (
           <div
-            key={t.id}
-            className="bg-white rounded-2xl shadow-lg p-6 border border-[#e6ddd5] hover:shadow-xl transition-all"
+            key={t._id}
+            className="bg-white rounded-2xl shadow-lg p-6 border border-[#e6ddd5] hover:shadow-xl transition-all flex flex-col items-center "
           >
             {/* Photo */}
             <div className="flex justify-center">
               <img
-                src={t.photo}
+                src={t.image}
                 alt={t.name}
                 className="w-20 h-20 object-cover rounded-full shadow-md border border-[#e6ddd5]"
               />
@@ -95,9 +122,14 @@ const ViewTestimonials = () => {
              
               <p className="text-gray-600 text-sm mt-3 italic">“{t.description}”</p>
             </div>
+            <button onClick={() => handleDelete(t._id)} className="border border-b bg-red-400  w-fit px-3   ">Delete</button>
+            
           </div>
+          
         ))}
       </div>
+            <ToastContainer position="top-right" autoClose={2000} />
+
     </div>
   );
 };

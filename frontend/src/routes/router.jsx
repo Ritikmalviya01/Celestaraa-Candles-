@@ -68,7 +68,7 @@ const router = createBrowserRouter([
         element: <Signup />,
       },
       {
-        path: "/search-candles/:_id",
+        path: "/search-candles/:slug",
         element: <SingleCandleDetails />,
       },
       {
@@ -80,7 +80,7 @@ const router = createBrowserRouter([
         element: <CandleBlog />,
       },
 {
- path: "/blog/:id",
+ path: "/blog/:slug",
         element: <ViewSingleBlog />,
 },
       // ✅ PROTECTED USER ROUTES

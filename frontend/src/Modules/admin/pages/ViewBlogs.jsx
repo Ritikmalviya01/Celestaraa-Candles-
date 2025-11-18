@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Trash2, Eye, Loader2, AlertCircle, Calendar, FileText, Search, RefreshCw } from 'lucide-react';
 import axios from 'axios';
 import BASE_URL from "../../../utils/Base_url"
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const ViewBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -11,12 +13,10 @@ const ViewBlogs = () => {
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch all blogs
   useEffect(() => {
     fetchBlogs();
   }, []);
 
-  // Filter blogs based on search
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredBlogs(blogs);
@@ -64,32 +64,19 @@ const ViewBlogs = () => {
 
       if (response.data.success) {
         setBlogs(blogs.filter(blog => blog._id !== blogId));
-        // Show success message
-        showNotification('Blog deleted successfully!', 'success');
+toast.success("Blog Deleted successfully");
       } else {
-        showNotification('Failed to delete blog', 'error');
+        toast.info('Failed to delete blog', 'error');
       }
     } catch (err) {
-      showNotification(err.response?.data?.message || 'Error deleting blog', 'error');
+      toast.error(err.response?.data?.message || 'Error deleting blog', 'error');
       console.error('Error deleting blog:', err);
     } finally {
       setDeleteLoading(null);
     }
   };
 
-  const showNotification = (message, type) => {
-    // Simple notification (you can replace with a toast library)
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white z-50 ${
-      type === 'success' ? 'bg-green-500' : 'bg-red-500'
-    }`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.remove();
-    }, 3000);
-  };
+ 
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -159,7 +146,7 @@ const ViewBlogs = () => {
           </div>
         </div>
 
-        {/* Stats and Search Bar */}
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="md:col-span-2">
             <div className="relative">
@@ -252,7 +239,7 @@ const ViewBlogs = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center gap-2">
                           <button
-                            onClick={() => window.open(`/blog/${blog._id}`, '_blank')}
+                            onClick={() => window.open(`/blog/${blog.slug}`, '_blank')}
                             className="p-2.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-all duration-200 group relative"
                             title="View blog"
                           >
@@ -305,6 +292,8 @@ const ViewBlogs = () => {
           </div>
         )}
       </div>
+      <ToastContainer position="top-right" autoClose={2000} />
+
     </div>
   );
 };

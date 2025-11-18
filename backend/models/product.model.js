@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import slugify from "slugify";
 const moreDetailsSchema = new mongoose.Schema(
   {
     aromaLevel: {
@@ -56,6 +56,11 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
     },
+    slug: {
+    type: String,
+    unique: true,
+    lowercase: true,
+  },
     image: {
       type: Array,
       default: [],
@@ -105,6 +110,13 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+productSchema.pre("save", function (next) {
+  if (!this.isModified("name")) return next();
+  this.slug = slugify(this.name, { lower: true, strict: true });
+  next();
+});
+
 
 const ProductModel = mongoose.model("product", productSchema);
 export default ProductModel;

@@ -9,12 +9,9 @@ const Home = () => {
     <div className="bg-bg  ">
       <HeroBanner />
       <LandingPageCardsSection />
-
       <Features />
       <OurStory />
       <TestimonialCarousel />
-    
-    
     </div>
   );
 };

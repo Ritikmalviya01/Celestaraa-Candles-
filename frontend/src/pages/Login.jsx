@@ -31,48 +31,58 @@ const Login = () => {
 
 const handleSubmit = async (values) => {
   setIsSubmitting(true);
-  
 
   try {
     const response = await axios.post(
       `${BASE_URL}/user/login`,
       values,
-      { withCredentials: true } // send cookies if using JWT
+      { withCredentials: true }
     );
 
-    // Response example: { success: true, user: { role: "ADMIN", name: "John" }, token: "..." }
-    const user = response.data.data.user;
+    // Check success from backend
+    if (response.data.success) {
+      toast.success("Login Successful!");
 
-    if (!user) {
-      toast.error("No User Found")
-      return;
-    }
+      const user = response.data.data.user;
 
-    // Update Redux state
-    dispatch(
-      login({
-        user: { name: user.name, email: user.email }, // optional: pick what you need
-        role: user.role,
-      })
-    );
+      if (!user) {
+        toast.error("No User Found");
+        return;
+      }
 
-    // Role-based navigation
-    if (user.role === "ADMIN") {
-      navigate("/admin/");
-    } else if (user.role === "USER") {
-      navigate("/search-candles/");
-    } else {
-      alert("Unknown role");
+      // Redux update
+      dispatch(
+        login({
+          user: { name: user.name, email: user.email },
+          role: user.role,
+        })
+      );
+
+      // Role-based redirect
+      if (user.role === "ADMIN") {
+        navigate("/admin/");
+      } else if (user.role === "USER") {
+        navigate("/search-candles/");
+      } else {
+        toast.error("Unknown role");
+      }
+    } 
+    else {
+      // Backend returned success: false
+      toast.error(response.data.message || "Login failed");
     }
 
   } catch (err) {
     console.error(err);
-              toast.error(  "Login Failed");
-    
-  } finally {
+
+    // Axios/network/server error
+    toast.error(err.response?.data?.message || "Login Failed");
+  } 
+  finally {
     setIsSubmitting(false);
   }
 };
+
 
 
   return (
@@ -195,6 +205,7 @@ const handleSubmit = async (values) => {
           </p>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={2000} />
     </div>
   );
 };

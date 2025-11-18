@@ -31,7 +31,7 @@ adminRouter.delete('/delete-product' , auth(["ADMIN"]), deleteProduct)
 adminRouter.get('/get-orders' , auth(["ADMIN"]), getOrders)
 adminRouter.post("/add-testimonial", auth(["ADMIN"]),upload.single("photo"), addTestimonial);
 adminRouter.get("/list-testimonials", listTestimonials); // anyone can view
-adminRouter.delete("/delete-testimonial/:testimonialId", auth(["ADMIN"]), deleteTestimonial);
+adminRouter.post("/delete-testimonial", auth(["ADMIN"]), deleteTestimonial);
 // // Users
 // router.get('/users', adminAuth, listUsers);
 
