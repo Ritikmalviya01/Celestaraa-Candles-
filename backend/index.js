@@ -12,8 +12,8 @@ import userRouter from './routes/user.route.js';
 import adminRouter from './routes/admin.routes.js';
 import blogRouter from './routes/blog.routes.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 dotenv.config()
 
@@ -38,7 +38,7 @@ app.use(helmet( {
 ))
 
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 const PORT = process.env.PORT || 8000 
@@ -53,10 +53,11 @@ app.use('/api/blog' , blogRouter)
 
 
 
-connectDb().then(() => {
+connectDb()
+.then(() => {
     app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+    // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 })
 })
